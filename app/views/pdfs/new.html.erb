@@ -1,0 +1,41 @@
+<div id="form-container">
+  <h1>Pecha Printer</h1>
+
+  <% flash.each do |type, msg| %>
+    <div class="alert">
+      <%= msg %>
+    </div>
+  <% end %>
+
+  <%= form_for @pdf, multipart: true do |form| %>
+    <% if @pdf.persisted? %>
+      <h2><%= @pdf.file.filename %></h2>
+    <% else %>
+      <div>
+        <%= form.file_field :file %>
+      </div>
+    <% end %>
+
+    <div>
+      <%= form.label :paper_size, "Paper Size" %>
+      <%= form.select :paper_size, options_for_select([['A4', 'A4'], ['A3', 'A3']], @pdf.paper_size) %>
+    </div>
+
+    <div>
+      <%= form.label :autoscale, "Autoscale" %>
+      <%= form.select :autoscale, options_for_select([['No', false], ['Fit paper', 'pdfjam'], ['Crop to content', 'podofo']], @pdf.autoscale || true) %>
+    </div>
+
+    <%= form.submit "Process PDF" %>
+    <% if @pdf.persisted? %>
+      <%= link_to "Download Processed PDF", download_pdf_path(@pdf.id), role: "button", download: true, class: "pico-background-green-400", style: "display: block; margin-bottom: 1em;" %>
+      <%= link_to "Process another PDF", new_pdf_path, role: "button", class: "pico-background-orange-500", style: "display: block" %>
+    <% end %>
+  <% end %>
+</div>
+
+<div id="preview">
+  <% if @pdf.persisted? %>
+    <embed src="<%= download_pdf_path(@pdf.id) %>#toolbar=0" type="application/pdf" width="100%" height="600px" />
+  <% end %>
+</div>
