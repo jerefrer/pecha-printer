@@ -4,8 +4,8 @@ lock "~> 3.19.1"
 set :application, "pecha_printer"
 set :repo_url, "git@github.com:jerefrer/pecha-printer.git"
 
-# Default branch is :master
-ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
+# Default branch is :main
+set :branch, 'main'
 
 # Default deploy_to directory is /var/www/my_app_name
 set :deploy_to, '/home/deploy/pecha_printer'
@@ -17,6 +17,20 @@ append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'tmp/webpack
 set :keep_releases, 5
 
 set :ssh_options, forward_agent: true
+
+# Ensure submodules are initialized and updated
+# after 'deploy:updating', 'deploy:git_submodules'
+
+# namespace :deploy do
+#   task :git_submodules do
+#     on roles(:app) do
+#       within release_path.join('lib/generate-printable-pecha/') do
+#         execute :git, 'submodule init'
+#         execute :git, 'submodule update'
+#       end
+#     end
+#   end
+# end
 
 # Default value for :format is :airbrussh.
 # set :format, :airbrussh
