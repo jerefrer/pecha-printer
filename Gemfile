@@ -69,3 +69,5 @@ group :test do
   gem "selenium-webdriver"
 end
 
+
+gem "ostruct", "~> 0.6.0"
