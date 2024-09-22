@@ -71,3 +71,5 @@ end
 
 
 gem "ostruct", "~> 0.6.0"
+
+gem "pg", "~> 1.5"
