@@ -22,10 +22,27 @@ body {
 }
 
 #form,
-#preview {
+#preview,
+#welcome {
   flex: 1 1 400px;
 }
 
 h1 {
   margin-top: 0;
+}
+
+#welcome {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-left: 100px;
+}
+
+#welcome img {
+  width: 400px;
+  margin: -75px 0;
+}
+
+#welcome ul {
+  width: 400px;
 }

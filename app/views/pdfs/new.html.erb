@@ -34,8 +34,18 @@
   <% end %>
 </div>
 
-<div id="preview">
-  <% if @pdf.persisted? %>
+<% if @pdf.persisted? %>
+  <div id="preview">
     <embed src="<%= download_pdf_path(@pdf.id) %>#toolbar=0" type="application/pdf" width="100%" height="600px" />
-  <% end %>
-</div>
+  </div>
+<% else %>
+  <div id="welcome">
+    <%= image_tag("printing-press.svg") %>
+    <ul>
+      <li>Give me a single page pecha PDF</li>
+      <li>Choose A3 or A4</li>
+      <li>Press "Process PDF"</li>
+      <li>Get a ready-to-print PDF in the right order for easy cutting and stacking!</li>
+    </ul>
+  </div>
+<% end %>
