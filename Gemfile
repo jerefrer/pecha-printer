@@ -54,6 +54,13 @@ group :development do
 
   # Highlight the fine-grained location where an error occurred [https://github.com/ruby/error_highlight]
   gem "error_highlight", ">= 0.4.0", platforms: [ :ruby ]
+
+  gem "capistrano", "~> 3.19"
+  gem "capistrano-rails", "~> 1.6"
+  gem "capistrano-passenger", "~> 0.2.1"
+  gem "capistrano-rbenv", "~> 2.2"
+  gem "ed25519", "~> 1.3"
+  gem "bcrypt_pbkdf", "~> 1.1"
 end
 
 group :test do
@@ -61,3 +68,4 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
