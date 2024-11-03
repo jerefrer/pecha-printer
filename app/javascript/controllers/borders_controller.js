@@ -83,7 +83,10 @@ export default class extends Controller {
   }
 
   updateHiddenInput(values) {
-    this.element.querySelector('input[name="pdf[borders]"]').value = values.join(' ')
+    const hiddenInput = this.element.querySelector('input[name="pdf[borders]"]')
+    if (hiddenInput) {
+      hiddenInput.value = values.join(' ')
+    }
   }
 
   submitForm(event) {
