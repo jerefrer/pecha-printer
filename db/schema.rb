@@ -10,12 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_09_21_120814) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_02_220503) do
   create_table "pdfs", force: :cascade do |t|
     t.string "file"
     t.string "paper_size"
     t.string "autoscale"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "borders"
+    t.boolean "portrait", default: false
+    t.integer "pages_per_sheet", default: 3
   end
 end

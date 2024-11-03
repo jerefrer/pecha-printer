@@ -1,0 +1,78 @@
+.field {
+  margin-bottom: 1em;
+}
+
+.borders-section {
+  border-radius: 4px;
+}
+
+.border-mode-selector {
+  margin: 1em 0;
+  display: flex;
+  gap: 1em;
+}
+
+input[type="radio"] {
+  display: none;
+}
+
+input[type="radio"] + label {
+  padding: 0.25em 0.5em;
+  border: 1px solid #535f7a;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type="radio"]:checked + label {
+  background: #535f7a;
+}
+
+.border-inputs {
+  margin-top: 1em;
+}
+
+.border-custom-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  justify-items: center;
+  width: 75%;
+  margin: 0 auto;
+}
+
+input[type=number] {
+  height: auto;
+  width: 100px !important;
+  margin: 0 !important;
+  padding: 0.5em;
+  font-size: 0.8em;
+}
+.border-custom input[type=number] {
+  text-align: center;
+}
+
+.border-preview {
+  padding: 1em 2em;
+  border: 2px dashed #999;
+  background: #f5f5f5;
+}
+
+.help-text {
+  display: block;
+  margin-bottom: 1em;
+  color: #666;
+  text-align: center;
+}
+
+[aria-busy=true]:not(input,select,textarea,html)::before {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000000d1;
+  background-position: center;
+  background-size: 4%;
+}

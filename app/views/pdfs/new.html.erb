@@ -1,13 +1,24 @@
 <div id="form-container">
   <h1>Pecha Printer</h1>
 
+<!--
   <% flash.each do |type, msg| %>
-    <div class="alert">
+    <div class="alert alert-<%= type == 'notice' ? 'success' : 'danger' %>">
       <%= msg %>
     </div>
   <% end %>
+-->
 
-  <%= form_for @pdf, multipart: true do |form| %>
+  <%= form_for @pdf, multipart: true, 
+    data: { 
+      controller: "borders",
+      action: "submit->borders#submitForm",
+      borders_target: "form"
+    } do |form|
+  %>
+  
+    <%= form.hidden_field :borders if @pdf.borders.present? %>
+  
     <% if @pdf.persisted? %>
       <h2><%= @pdf.file.filename %></h2>
     <% else %>
@@ -16,15 +27,154 @@
       </div>
     <% end %>
 
-    <div>
-      <%= form.label :paper_size, "Paper Size" %>
-      <%= form.select :paper_size, options_for_select([['A4', 'A4'], ['A3', 'A3']], @pdf.paper_size) %>
+    <div style="display: flex; gap: 4em;">
+
+      <div class="field">
+        <%= form.label :paper_size, "Paper size" %>
+
+        <%= form.radio_button :paper_size, 'A4', id: "pdf_paper_size_a4" %>
+        <%= form.label :paper_size_a4, 'A4' %>
+        
+        <%= form.radio_button :paper_size, 'A3', id: "pdf_paper_size_a3" %>
+        <%= form.label :paper_size_a3, 'A3' %>
+      </div>
+
+      <div class="field">
+        <%= form.label :portrait, "Orientation" %>
+
+        <%= form.radio_button :portrait, false, id: "pdf_portrait_no" %>
+        <%= form.label :portrait_no, 'Landscape' %>
+        
+        <%= form.radio_button :portrait, true, id: "pdf_portrait_yes" %>
+        <%= form.label :portrait_yes, 'Portait' %>
+      </div>
+      
     </div>
 
-    <div>
-      <%= form.label :autoscale, "Autoscale" %>
-      <%= form.select :autoscale, options_for_select([['No', false], ['Fit paper', 'pdfjam'], ['Crop to content', 'podofo']], @pdf.autoscale || true) %>
+    <div class="field">
+      <%= form.label :pages_per_sheet, "Pages per sheet" %>
+
+      <%= form.radio_button :pages_per_sheet, '2', id: "pdf_pages_per_sheet_2" %>
+      <%= form.label :pages_per_sheet_2, '2' %>
+      
+      <%= form.radio_button :pages_per_sheet, '3', id: "pdf_pages_per_sheet_3" %>
+      <%= form.label :pages_per_sheet_3, '3' %>
+      
+      <%= form.radio_button :pages_per_sheet, '4', id: "pdf_pages_per_sheet_4" %>
+      <%= form.label :pages_per_sheet_4, '4' %>
+      
+      <%= form.radio_button :pages_per_sheet, '5', id: "pdf_pages_per_sheet_5" %>
+      <%= form.label :pages_per_sheet_5, '5' %>
+      
+      <%= form.radio_button :pages_per_sheet, '6', id: "pdf_pages_per_sheet_6" %>
+      <%= form.label :pages_per_sheet_6, '6' %>
+      
+      <%= form.radio_button :pages_per_sheet, '7', id: "pdf_pages_per_sheet_7" %>
+      <%= form.label :pages_per_sheet_7, '7' %>
+      
+      <%= form.radio_button :pages_per_sheet, '8', id: "pdf_pages_per_sheet_8" %>
+      <%= form.label :pages_per_sheet_8, '8' %>
     </div>
+
+    <div class="field">
+      <%= form.label :autoscale, "Autoscale" %>
+
+      <%= form.radio_button :autoscale, 'none', id: "pdf_autoscale_none" %>
+      <%= form.label :autoscale_none, 'No' %>
+      
+      <%= form.radio_button :autoscale, 'pdfjam', id: "pdf_autoscale_pdfjam" %>
+      <%= form.label :autoscale_pdfjam, 'Fit paper' %>
+      
+      <%= form.radio_button :autoscale, 'podofo', id: "pdf_autoscale_podofo" %>
+      <%= form.label :autoscale_podofo, 'Crop to content' %>
+    </div>
+
+    <div class="field borders-section">
+      <label>Margins adjustment (in mm)</label>
+
+      <%= form.radio_button :border_mode, 'none', checked: true, class: 'border-mode-radio', data: { action: "change->borders#updateMode", borders_target: "mode" } %>
+      <%= form.label :border_mode_none, 'None', class: 'border-mode-label' %>
+      
+      <%= form.radio_button :border_mode, 'all', class: 'border-mode-radio', data: { action: "change->borders#updateMode", borders_target: "mode" } %>
+      <%= form.label :border_mode_all, 'All sides', class: 'border-mode-label' %>
+      
+      <%= form.radio_button :border_mode, 'horizontal_vertical', class: 'border-mode-radio', data: { action: "change->borders#updateMode", borders_target: "mode" } %>
+      <%= form.label :border_mode_horizontal_vertical, 'Horizontal/Vertical', class: 'border-mode-label' %>
+      
+      <%= form.radio_button :border_mode, 'custom', class: 'border-mode-radio', data: { action: "change->borders#updateMode", borders_target: "mode" } %>
+      <%= form.label :border_mode_custom, 'Custom', class: 'border-mode-label' %>
+
+      <div class="border-inputs" data-borders-target="inputs">
+        
+        <small class="help-text">
+          Use positive values to add margins, and negative values to crop.
+        </small>
+
+        <div class="border-all" data-borders-target="all">
+          <%= form.label :border_all, 'Margin width for all sides' %>
+          <%= form.number_field :border_all, 
+                                step: 'any',
+                                placeholder: '0mm',
+                                class: 'border-input',
+                                data: { target: 'all' } %>
+        </div>
+
+        <div class="border-hv" data-borders-target="hv">
+          <div style="display: flex; gap: 2em">
+            <div>
+              <%= form.label :border_horizontal, 'Left & right margins' %>
+              <%= form.number_field :border_horizontal,
+                                    step: 'any',
+                                    placeholder: '0mm',
+                                    class: 'border-input',
+                                    data: { target: 'horizontal' } %>
+            </div>
+            <div>
+              <%= form.label :border_vertical, 'Top & bottom margins' %>
+              <%= form.number_field :border_vertical,
+                                    step: 'any',
+                                    placeholder: '0mm',
+                                    class: 'border-input',
+                                    data: { target: 'vertical' } %>
+            </div>
+          </div>
+        </div>
+
+        <div class="border-custom" data-borders-target="custom">
+          <div class="border-custom-grid">
+            <div></div>
+            <%= form.number_field :border_top,
+                                  step: 'any',
+                                  placeholder: '0mm',
+                                  class: 'border-input border-top',
+                                  data: { target: 'top' } %>
+            <div></div>
+            
+            <%= form.number_field :border_left,
+                                  step: 'any',
+                                  placeholder: '0mm',
+                                  class: 'border-input border-left',
+                                  data: { target: 'left' } %>
+            <div></div>
+            <%= form.number_field :border_right,
+                                  step: 'any',
+                                  placeholder: '0mm',
+                                  class: 'border-input border-right',
+                                  data: { target: 'right' } %>
+            
+            <div></div>
+            <%= form.number_field :border_bottom,
+                                  step: 'any',
+                                  placeholder: '0mm',
+                                  class: 'border-input border-bottom',
+                                  data: { target: 'bottom' } %>
+            <div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <br>
 
     <%= form.submit "Process PDF" %>
     <% if @pdf.persisted? %>
@@ -36,16 +186,10 @@
 
 <% if @pdf.persisted? %>
   <div id="preview">
-    <embed src="<%= download_pdf_path(@pdf.id) %>#toolbar=0" type="application/pdf" width="100%" height="600px" />
+    <embed src="<%= download_pdf_path(@pdf.id) %>#toolbar=0" type="application/pdf" width="100%" height="100%" />
   </div>
 <% else %>
   <div id="welcome">
     <%= image_tag("printing-press.svg") %>
-    <ul>
-      <li>Give me a single page pecha PDF</li>
-      <li>Choose A3 or A4</li>
-      <li>Press "Process PDF"</li>
-      <li>Get a ready-to-print PDF in the right order for easy cutting and stacking!</li>
-    </ul>
   </div>
 <% end %>
