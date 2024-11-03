@@ -14,13 +14,24 @@
  *= require_self
  */
 
-body {
+main {
   display: flex;
   flex-wrap: wrap;
   height: 100vh;
   padding: 30px;
   gap: 30px;
   font-size: 18px;
+  opacity: 0;
+  animation: fadeIn 0.5s ease-in forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 #form,
