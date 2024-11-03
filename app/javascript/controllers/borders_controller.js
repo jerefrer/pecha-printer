@@ -83,14 +83,7 @@ export default class extends Controller {
   }
 
   updateHiddenInput(values) {
-    let hiddenInput = this.element.querySelector('input[name="pdf[borders]"]')
-    if (!hiddenInput) {
-      hiddenInput = document.createElement('input')
-      hiddenInput.type = 'hidden'
-      hiddenInput.name = 'pdf[borders]'
-      this.formTarget.appendChild(hiddenInput)
-    }
-    hiddenInput.value = values.join(' ')
+    this.element.querySelector('input[name="pdf[borders]"]').value = values.join(' ')
   }
 
   submitForm(event) {
