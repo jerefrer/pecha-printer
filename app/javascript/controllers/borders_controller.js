@@ -37,7 +37,7 @@ export default class extends Controller {
     }
 
     // Set the radio button
-    const radio = this.element.querySelector(`input[value="${mode}"]`)
+    const radio = this.element.querySelector(`.borders-section input[value="${mode}"]`)
     if (radio) {
       radio.checked = true
     }
