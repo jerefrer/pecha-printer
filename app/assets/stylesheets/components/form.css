@@ -76,3 +76,7 @@ input[type=number] {
   background-position: center;
   background-size: 4%;
 }
+
+[type=checkbox]~label:not(:last-of-type), [type=radio]~label:not(:last-of-type) {
+  margin-inline-end: 0.2em;
+}
