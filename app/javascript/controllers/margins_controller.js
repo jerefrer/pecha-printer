@@ -1,18 +1,18 @@
-// app/javascript/controllers/borders_controller.js
+// app/javascript/controllers/margins_controller.js
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = [ "mode", "inputs", "all", "hv", "custom", "form" ]
 
   connect() {
-    const bordersInput = this.element.querySelector('input[name="pdf[borders]"]')
-    const bordersValue = bordersInput?.value || "0 0 0 0"
-    this.initializeFromBorders(bordersValue)
+    const marginsInput = this.element.querySelector('input[name="pdf[sheet_margins]"]')
+    const marginsValue = marginsInput?.value || "0 0 0 0"
+    this.initializeFromString(marginsValue)
   }
 
-  initializeFromBorders(borders) {
+  initializeFromString(margins) {
     // Always split into 4 numbers, defaulting to 0
-    const values = borders.split(' ').map(Number)
+    const values = margins.split(' ').map(Number)
     const [left, bottom, right, top] = values
     // Determine mode based on patterns
     let mode
@@ -37,20 +37,20 @@ export default class extends Controller {
     }
 
     // Set the radio button
-    const radio = this.element.querySelector(`.borders-section input[value="${mode}"]`)
+    const radio = this.element.querySelector(`.sheet-margins-section input[value="${mode}"]`)
     if (radio) {
       radio.checked = true
     }
 
     // Show the appropriate inputs
-    this.updateBorderInputs(mode)
+    this.updateMarginInputs(mode)
 
     // Always update hidden input with normalized value
     this.updateHiddenInput(values)
   }
 
   updateMode(event) {
-    this.updateBorderInputs(event.target.value)
+    this.updateMarginInputs(event.target.value)
     
     // Reset values when mode changes
     const mode = event.target.value
@@ -75,7 +75,7 @@ export default class extends Controller {
     this.updateHiddenInput(values)
   }
 
-  updateBorderInputs(mode) {
+  updateMarginInputs(mode) {
     this.inputsTarget.style.display = mode === 'none' ? 'none' : 'block'
     this.allTarget.style.display = mode === 'all' ? 'block' : 'none'
     this.hvTarget.style.display = mode === 'horizontal_vertical' ? 'block' : 'none'
@@ -83,7 +83,7 @@ export default class extends Controller {
   }
 
   updateHiddenInput(values) {
-    const hiddenInput = this.element.querySelector('input[name="pdf[borders]"]')
+    const hiddenInput = this.element.querySelector('input[name="pdf[margins]"]')
     if (hiddenInput) {
       hiddenInput.value = values.join(' ')
     }

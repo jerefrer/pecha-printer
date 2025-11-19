@@ -51,13 +51,12 @@ class PdfsController < ApplicationController
 
   def pdf_params
     permitted = params.require(:pdf).permit(
-      :file, :pages_per_sheet, :paper_size, :portrait, :pages_per_sheet, :autoscale,
-      :borders, :border_mode
+      :file, :pages_per_sheet, :paper_size, :portrait, :pages_per_sheet, :autoscale, :sheet_margins
     )
 
     # Clean up any empty border values
-    permitted[:borders]&.strip!
-    permitted[:borders] = nil if permitted[:borders].blank?
+    permitted[:sheet_margins]&.strip!
+    permitted[:sheet_margins] = nil if permitted[:sheet_margins].blank?
 
     permitted
   end
@@ -75,7 +74,7 @@ class PdfsController < ApplicationController
     ]
 
     command_parts << "--portrait" if pdf.portrait == true
-    command_parts << "--borders" << %Q("#{pdf.borders}") if pdf.borders
+    command_parts << "--sheet-margins" << %Q("#{pdf.sheet_margins}") if pdf.sheet_margins
 
     python_command = command_parts.join(" ")
     logger.info "Running command: #{python_command}"

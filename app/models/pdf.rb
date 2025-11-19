@@ -6,12 +6,12 @@ class Pdf < ApplicationRecord
   validates :pages_per_sheet, presence: true, numericality: { only_integer: true, greater_than: 0 }
   validates :autoscale, presence: true, inclusion: { in: %w[none pdfjam podofo] }
 
-  attr_accessor :border_mode,
-                :border_all,
-                :border_horizontal, :border_vertical,
-                :border_left, :border_right, :border_top, :border_bottom
+  attr_accessor :sheet_margin_mode,
+                :sheet_margin_all,
+                :sheet_margin_horizontal, :sheet_margin_vertical,
+                :sheet_margin_left, :sheet_margin_right, :sheet_margin_top, :sheet_margin_bottom
 
-  validates :borders, format: { 
+  validates :sheet_margins, format: {
     with: /\A(\d+ ){3}\d+\z/,
     message: "4 space-separated numbers",
     allow_blank: true

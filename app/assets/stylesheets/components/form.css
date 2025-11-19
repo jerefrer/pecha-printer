@@ -2,11 +2,11 @@
   margin-bottom: 1em;
 }
 
-.borders-section {
+.margins-section {
   border-radius: 4px;
 }
 
-.border-mode-selector {
+.margin-mode-selector {
   margin: 1em 0;
   display: flex;
   gap: 1em;
@@ -27,11 +27,11 @@ input[type="radio"]:checked + label {
   background: #535f7a;
 }
 
-.border-inputs {
+.margin-inputs {
   margin-top: 1em;
 }
 
-.border-custom-grid {
+.margin-custom-grid {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
@@ -47,11 +47,11 @@ input[type=number] {
   padding: 0.5em;
   font-size: 0.8em;
 }
-.border-custom input[type=number] {
+.margin-custom input[type=number] {
   text-align: center;
 }
 
-.border-preview {
+.margin-preview {
   padding: 1em 2em;
   border: 2px dashed #999;
   background: #f5f5f5;
