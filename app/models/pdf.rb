@@ -12,8 +12,8 @@ class Pdf < ApplicationRecord
                 :sheet_margin_left, :sheet_margin_right, :sheet_margin_top, :sheet_margin_bottom
 
   validates :sheet_margins, format: {
-    with: /\A(\d+ ){3}\d+\z/,
-    message: "4 space-separated numbers",
+    with: /\A(-?\d+\.?\d* ){3}-?\d+\.?\d*\z/,
+    message: "4 space-separated numbers (can include decimals, negative values allowed)",
     allow_blank: true
   }
 end
