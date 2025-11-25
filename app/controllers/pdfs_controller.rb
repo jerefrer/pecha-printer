@@ -1,4 +1,4 @@
-require "open3"
+require "stacked_pdf_generator"
 
 class PdfsController < ApplicationController
   def new
@@ -8,12 +8,12 @@ class PdfsController < ApplicationController
   def create
     @pdf = Pdf.new(pdf_params)
     if @pdf.save
-      errors = process_pdf(@pdf)
-      if errors.empty?
+      result = process_pdf(@pdf)
+      if result.success?
         redirect_to [ :edit, @pdf ]
         flash[:notice] = "PDF processed successfully!"
       else
-        flash[:alert] = "Error processing PDF: #{errors}"
+        flash[:alert] = "Error processing PDF: #{result.message}"
         redirect_to root_path
       end
     else
@@ -25,12 +25,12 @@ class PdfsController < ApplicationController
   def update
     @pdf = Pdf.find(params[:id])
     if @pdf.update(pdf_params)
-      errors = process_pdf(@pdf)
-      if errors.empty?
+      result = process_pdf(@pdf)
+      if result.success?
         redirect_to [ :edit, @pdf ]
         flash[:notice] = "PDF reprocessed successfully!"
       else
-        flash[:alert] = "Error processing PDF: #{errors}"
+        flash[:alert] = "Error processing PDF: #{result.message}"
         redirect_to root_path
       end
     else
@@ -62,25 +62,15 @@ class PdfsController < ApplicationController
   end
 
   def process_pdf(pdf)
-    script_path = Rails.root.join("lib/generate-printable-pecha/generate_printable_pecha.command")
-    command_parts = [
-      "python3",
-      script_path,
-      pdf.file.path,
-      "--output-file-name", output_file_name(pdf),
-      "--pages-per-sheet", pdf.pages_per_sheet,
-      "--paper-size", pdf.paper_size,
-      "--autoscale", pdf.autoscale
-    ]
-
-    command_parts << "--portrait" if pdf.portrait == true
-    command_parts << "--sheet-margins" << %Q("#{pdf.sheet_margins}") if pdf.sheet_margins
-
-    python_command = command_parts.join(" ")
-    logger.info "Running command: #{python_command}"
-
-    _, stderr, _ = Open3.capture3(python_command)
-    stderr
+    StackedPdfGenerator.call(
+      input_path: pdf.file.path,
+      output_path: output_file_path(pdf),
+      pages_per_sheet: pdf.pages_per_sheet,
+      paper_size: pdf.paper_size,
+      autoscale: pdf.autoscale,
+      portrait: pdf.portrait,
+      sheet_margins: pdf.sheet_margins
+    )
   end
 
   def output_file_name(pdf)

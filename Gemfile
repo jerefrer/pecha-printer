@@ -74,3 +74,5 @@ end
 gem "ostruct", "~> 0.6.0"
 
 gem "pg", "~> 1.5"
+
+gem "stacked-pdf-generator", "~> 1.0"
