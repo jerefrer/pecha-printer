@@ -94,8 +94,6 @@ GEM
       sshkit (>= 1.9.0)
     capistrano-bundler (2.1.1)
       capistrano (~> 3.1)
-    capistrano-git-with-submodules (2.0.6)
-      capistrano (~> 3.7)
     capistrano-passenger (0.2.1)
       capistrano (~> 3.0)
     capistrano-rails (1.6.3)
@@ -375,7 +373,6 @@ DEPENDENCIES
   bootsnap
   brakeman
   capistrano (~> 3.19)
-  capistrano-git-with-submodules (~> 2.0)
   capistrano-passenger (~> 0.2.1)
   capistrano-rails (~> 1.6)
   capistrano-rbenv (~> 2.2)
