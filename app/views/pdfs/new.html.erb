@@ -47,6 +47,11 @@
         
         <%= form.radio_button :portrait, true, id: "pdf_portrait_yes" %>
         <%= form.label :portrait_yes, 'Portait' %>
+
+        <div style="margin-top: 1rem;">
+          <%= form.check_box :two_sided_flipped, { id: 'pdf_two_sided_flipped', checked: @pdf.two_sided_flipped? }, '1', '0' %>
+          <%= form.label :two_sided_flipped, 'Flip even pages for two-sided printing' %>
+        </div>
       </div>
       
     </div>
