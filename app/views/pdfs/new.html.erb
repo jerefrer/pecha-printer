@@ -1,7 +1,7 @@
 <div id="form-container">
   <h1>Pecha Printer</h1>
 
-<!--
+  <!--
   <% flash.each do |type, msg| %>
     <div class="alert alert-<%= type == 'notice' ? 'success' : 'danger' %>">
       <%= msg %>
@@ -16,185 +16,187 @@
       margins_target: "form"
     } do |form|
   %>
-  
-    <%= form.hidden_field :sheet_margins %>
-  
-    <% if @pdf.persisted? %>
-      <h2><%= @pdf.file.filename %></h2>
-    <% else %>
-      <div>
-        <%= form.file_field :file %>
-      </div>
-    <% end %>
 
-    <div style="display: flex; gap: 4em;">
+  <%= form.hidden_field :sheet_margins %>
 
-      <div class="field">
-        <%= form.label :paper_size, "Paper size" %>
+  <% if @pdf.persisted? %>
+  <h2><%= @pdf.file.filename %></h2>
+  <% else %>
+  <div>
+    <%= form.file_field :file %>
+  </div>
+  <% end %>
 
-        <%= form.radio_button :paper_size, 'A4', id: "pdf_paper_size_a4" %>
-        <%= form.label :paper_size_a4, 'A4' %>
-        
-        <%= form.radio_button :paper_size, 'A3', id: "pdf_paper_size_a3" %>
-        <%= form.label :paper_size_a3, 'A3' %>
-      </div>
+  <div style="display: flex; gap: 4em;">
 
-      <div class="field">
-        <%= form.label :portrait, "Orientation" %>
+    <div class="field">
+      <%= form.label :paper_size, "Paper size" %>
 
-        <%= form.radio_button :portrait, false, id: "pdf_portrait_no" %>
-        <%= form.label :portrait_no, 'Landscape' %>
-        
-        <%= form.radio_button :portrait, true, id: "pdf_portrait_yes" %>
-        <%= form.label :portrait_yes, 'Portait' %>
+      <%= form.radio_button :paper_size, 'A4', id: "pdf_paper_size_a4" %>
+      <%= form.label :paper_size_a4, 'A4' %>
 
-        <div style="margin-top: 1rem;">
-          <%= form.check_box :two_sided_flipped, { id: 'pdf_two_sided_flipped', checked: @pdf.two_sided_flipped? }, '1', '0' %>
-          <%= form.label :two_sided_flipped, 'Flip even pages for two-sided printing' %>
-        </div>
-      </div>
-      
+      <%= form.radio_button :paper_size, 'A3', id: "pdf_paper_size_a3" %>
+      <%= form.label :paper_size_a3, 'A3' %>
     </div>
 
     <div class="field">
-      <%= form.label :pages_per_sheet, "Pages per sheet" %>
+      <%= form.label :portrait, "Orientation" %>
 
-      <%= form.radio_button :pages_per_sheet, '2', id: "pdf_pages_per_sheet_2" %>
-      <%= form.label :pages_per_sheet_2, '2' %>
-      
-      <%= form.radio_button :pages_per_sheet, '3', id: "pdf_pages_per_sheet_3" %>
-      <%= form.label :pages_per_sheet_3, '3' %>
-      
-      <%= form.radio_button :pages_per_sheet, '4', id: "pdf_pages_per_sheet_4" %>
-      <%= form.label :pages_per_sheet_4, '4' %>
-      
-      <%= form.radio_button :pages_per_sheet, '5', id: "pdf_pages_per_sheet_5" %>
-      <%= form.label :pages_per_sheet_5, '5' %>
-      
-      <%= form.radio_button :pages_per_sheet, '6', id: "pdf_pages_per_sheet_6" %>
-      <%= form.label :pages_per_sheet_6, '6' %>
-      
-      <%= form.radio_button :pages_per_sheet, '7', id: "pdf_pages_per_sheet_7" %>
-      <%= form.label :pages_per_sheet_7, '7' %>
-      
-      <%= form.radio_button :pages_per_sheet, '8', id: "pdf_pages_per_sheet_8" %>
-      <%= form.label :pages_per_sheet_8, '8' %>
+      <%= form.radio_button :portrait, false, id: "pdf_portrait_no" %>
+      <%= form.label :portrait_no, 'Landscape' %>
+
+      <%= form.radio_button :portrait, true, id: "pdf_portrait_yes" %>
+      <%= form.label :portrait_yes, 'Portait' %>
+
+      <div style="margin-top: 1rem;">
+        <%= form.check_box :two_sided_flipped, { id: 'pdf_two_sided_flipped', checked: @pdf.two_sided_flipped? }, '1', '0' %>
+        <%= form.label :two_sided_flipped, 'Flip even pages for two-sided printing' %>
+      </div>
     </div>
 
-    <div class="field">
-      <%= form.label :autoscale, "Autoscale" %>
+  </div>
 
-      <%= form.radio_button :autoscale, 'none', id: "pdf_autoscale_none" %>
-      <%= form.label :autoscale_none, 'No' %>
-      
-      <%= form.radio_button :autoscale, 'pdfjam', id: "pdf_autoscale_pdfjam" %>
-      <%= form.label :autoscale_pdfjam, 'Fit page' %>
-      
-      <%= form.radio_button :autoscale, 'podofo', id: "pdf_autoscale_podofo" %>
-      <%= form.label :autoscale_podofo, 'Crop to content' %>
-    </div>
+  <div class="field">
+    <%= form.label :pages_per_sheet, "Pages per sheet" %>
 
-    <div class="field margins-section">
-      <label>Margins adjustment (in mm)</label>
+    <%= form.radio_button :pages_per_sheet, '2', id: "pdf_pages_per_sheet_2" %>
+    <%= form.label :pages_per_sheet_2, '2' %>
 
-      <%= form.radio_button :sheet_margin_mode, 'none', checked: true, class: 'margin-mode-radio', data: { action: "change->margins#updateMode", margins_target: "mode" } %>
-      <%= form.label :sheet_margin_mode_none, 'None', class: 'margin-mode-label' %>
-      
-      <%= form.radio_button :sheet_margin_mode, 'all', class: 'margin-mode-radio', data: { action: "change->margins#updateMode", margins_target: "mode" } %>
-      <%= form.label :sheet_margin_mode_all, 'All sides', class: 'margin-mode-label' %>
-      
-      <%= form.radio_button :sheet_margin_mode, 'horizontal_vertical', class: 'margin-mode-radio', data: { action: "change->margins#updateMode", margins_target: "mode" } %>
-      <%= form.label :sheet_margin_mode_horizontal_vertical, 'Horizontal/Vertical', class: 'margin-mode-label' %>
-      
-      <%= form.radio_button :sheet_margin_mode, 'custom', class: 'margin-mode-radio', data: { action: "change->margins#updateMode", margins_target: "mode" } %>
-      <%= form.label :sheet_margin_mode_custom, 'Custom', class: 'margin-mode-label' %>
+    <%= form.radio_button :pages_per_sheet, '3', id: "pdf_pages_per_sheet_3" %>
+    <%= form.label :pages_per_sheet_3, '3' %>
 
-      <div class="margin-inputs" data-margins-target="inputs">
-        
-        <small class="help-text">
-          Use positive values to add margins, and negative values to crop.
-        </small>
+    <%= form.radio_button :pages_per_sheet, '4', id: "pdf_pages_per_sheet_4" %>
+    <%= form.label :pages_per_sheet_4, '4' %>
 
-        <div class="margin-all" data-margins-target="all">
-          <%= form.label :sheet_margin_all, 'Margin width for all sides' %>
-          <%= form.number_field :sheet_margin_all, 
+    <%= form.radio_button :pages_per_sheet, '5', id: "pdf_pages_per_sheet_5" %>
+    <%= form.label :pages_per_sheet_5, '5' %>
+
+    <%= form.radio_button :pages_per_sheet, '6', id: "pdf_pages_per_sheet_6" %>
+    <%= form.label :pages_per_sheet_6, '6' %>
+
+    <%= form.radio_button :pages_per_sheet, '7', id: "pdf_pages_per_sheet_7" %>
+    <%= form.label :pages_per_sheet_7, '7' %>
+
+    <%= form.radio_button :pages_per_sheet, '8', id: "pdf_pages_per_sheet_8" %>
+    <%= form.label :pages_per_sheet_8, '8' %>
+  </div>
+
+  <div class="field">
+    <%= form.label :autoscale, "Autoscale" %>
+
+    <%= form.radio_button :autoscale, 'none', id: "pdf_autoscale_none" %>
+    <%= form.label :autoscale_none, 'No' %>
+
+    <%= form.radio_button :autoscale, 'pdfjam', id: "pdf_autoscale_pdfjam" %>
+    <%= form.label :autoscale_pdfjam, 'Fit page' %>
+
+    <%= form.radio_button :autoscale, 'podofo', id: "pdf_autoscale_podofo" %>
+    <%= form.label :autoscale_podofo, 'Crop to content' %>
+  </div>
+
+  <div class="field margins-section">
+    <label>Margins adjustment (in mm)</label>
+
+    <%= form.radio_button :sheet_margin_mode, 'none', class: 'margin-mode-radio', data: { action: "change->margins#updateMode", margins_target: "mode" } %>
+    <%= form.label :sheet_margin_mode_none, 'None', class: 'margin-mode-label' %>
+
+    <%= form.radio_button :sheet_margin_mode, 'all', class: 'margin-mode-radio', data: { action: "change->margins#updateMode", margins_target: "mode" } %>
+    <%= form.label :sheet_margin_mode_all, 'All sides', class: 'margin-mode-label' %>
+
+    <%= form.radio_button :sheet_margin_mode, 'horizontal_vertical', checked: true, class: 'margin-mode-radio', data: { action: "change->margins#updateMode", margins_target: "mode" } %>
+    <%= form.label :sheet_margin_mode_horizontal_vertical, 'Horizontal/Vertical', class: 'margin-mode-label' %>
+
+    <%= form.radio_button :sheet_margin_mode, 'custom', class: 'margin-mode-radio', data: { action: "change->margins#updateMode", margins_target: "mode" } %>
+    <%= form.label :sheet_margin_mode_custom, 'Custom', class: 'margin-mode-label' %>
+
+    <div class="margin-inputs" data-margins-target="inputs">
+
+      <small class="help-text">
+        Use positive values to add margins, and negative values to crop.
+      </small>
+
+      <div class="margin-all" data-margins-target="all">
+        <%= form.label :sheet_margin_all, 'Margin width for all sides' %>
+        <%= form.number_field :sheet_margin_all, 
                                 step: 'any',
                                 placeholder: '0mm',
                                 class: 'margin-input',
                                 data: { target: 'all' } %>
-        </div>
+      </div>
 
-        <div class="margin-hv" data-margins-target="hv">
-          <div style="display: flex; gap: 2em">
-            <div>
-              <%= form.label :sheet_margin_horizontal, 'Left & right margins' %>
-              <%= form.number_field :sheet_margin_horizontal,
+      <div class="margin-hv" data-margins-target="hv">
+        <div style="display: flex; gap: 2em">
+          <div>
+            <%= form.label :sheet_margin_horizontal, 'Left & right margins' %>
+            <%= form.number_field :sheet_margin_horizontal,
                                     step: 'any',
                                     placeholder: '0mm',
+                                    value: 0,
                                     class: 'margin-input',
                                     data: { target: 'horizontal' } %>
-            </div>
-            <div>
-              <%= form.label :sheet_margin_vertical, 'Top & bottom margins' %>
-              <%= form.number_field :sheet_margin_vertical,
+          </div>
+          <div>
+            <%= form.label :sheet_margin_vertical, 'Top & bottom margins' %>
+            <%= form.number_field :sheet_margin_vertical,
                                     step: 'any',
                                     placeholder: '0mm',
+                                    value: -5,
                                     class: 'margin-input',
                                     data: { target: 'vertical' } %>
-            </div>
           </div>
         </div>
+      </div>
 
-        <div class="margin-custom" data-margins-target="custom">
-          <div class="margin-custom-grid">
-            <div></div>
-            <%= form.number_field :sheet_margin_top,
+      <div class="margin-custom" data-margins-target="custom">
+        <div class="margin-custom-grid">
+          <div></div>
+          <%= form.number_field :sheet_margin_top,
                                   step: 'any',
                                   placeholder: '0mm',
                                   class: 'margin-input margin-top',
                                   data: { target: 'top' } %>
-            <div></div>
-            
-            <%= form.number_field :sheet_margin_left,
+          <div></div>
+
+          <%= form.number_field :sheet_margin_left,
                                   step: 'any',
                                   placeholder: '0mm',
                                   class: 'margin-input margin-left',
                                   data: { target: 'left' } %>
-            <div></div>
-            <%= form.number_field :sheet_margin_right,
+          <div></div>
+          <%= form.number_field :sheet_margin_right,
                                   step: 'any',
                                   placeholder: '0mm',
                                   class: 'margin-input margin-right',
                                   data: { target: 'right' } %>
-            
-            <div></div>
-            <%= form.number_field :sheet_margin_bottom,
+
+          <div></div>
+          <%= form.number_field :sheet_margin_bottom,
                                   step: 'any',
                                   placeholder: '0mm',
                                   class: 'margin-input margin-bottom',
                                   data: { target: 'bottom' } %>
-            <div></div>
-          </div>
+          <div></div>
         </div>
       </div>
     </div>
+  </div>
 
-    <br>
+  <br>
 
-    <%= form.submit "Process PDF" %>
-    <% if @pdf.persisted? %>
-      <%= link_to "Download Processed PDF", download_pdf_path(@pdf.id), role: "button", download: true, class: "pico-background-green-400", style: "display: block; margin-bottom: 1em;" %>
-      <%= link_to "Process another PDF", new_pdf_path, role: "button", class: "pico-background-orange-500", style: "display: block" %>
-    <% end %>
+  <%= form.submit "Process PDF" %>
+  <% if @pdf.persisted? %>
+  <%= link_to "Download Processed PDF", download_pdf_path(@pdf.id), role: "button", download: true, class: "pico-background-green-400", style: "display: block; margin-bottom: 1em;" %>
+  <%= link_to "Process another PDF", new_pdf_path, role: "button", class: "pico-background-orange-500", style: "display: block" %>
+  <% end %>
   <% end %>
 </div>
 
 <% if @pdf.persisted? %>
-  <div id="preview">
-    <embed src="<%= download_pdf_path(@pdf.id) %>#toolbar=0" type="application/pdf" width="100%" height="100%" />
-  </div>
+<div id="preview">
+  <embed src="<%= download_pdf_path(@pdf.id) %>#toolbar=0" type="application/pdf" width="100%" height="100%" />
+</div>
 <% else %>
-  <div id="welcome">
-    <%= image_tag("printing-press.svg") %>
-  </div>
+<div id="welcome">
+  <%= image_tag("printing-press.svg") %>
+</div>
 <% end %>

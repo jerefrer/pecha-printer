@@ -8,7 +8,7 @@ export default class extends Controller {
     this.hiddenInput = this.element.querySelector(
       'input[name="pdf[sheet_margins]"]'
     );
-    const marginsValue = this.hiddenInput?.value?.trim() || "0 0 0 0";
+    const marginsValue = this.hiddenInput?.value?.trim() || "0 -5 0 -5";
     this.initializeFromString(marginsValue);
   }
 
