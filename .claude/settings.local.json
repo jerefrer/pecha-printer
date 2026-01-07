@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cat:*)",
+      "mcp__serena__read_memory",
+      "Bash(bin/rails generate:*)",
+      "Bash(bundle install:*)",
+      "Bash(bin/rails db:migrate:*)",
+      "Bash(bin/rails runner:*)",
+      "Bash(bin/rails pdfs:cleanup:*)",
+      "Bash(bundle exec whenever:*)",
+      "Bash(find:*)"
+    ]
+  }
+}

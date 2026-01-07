@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_11_26_131500) do
+ActiveRecord::Schema[7.2].define(version: 2026_01_07_193027) do
   create_table "pdfs", force: :cascade do |t|
     t.string "file"
     t.string "paper_size"
@@ -21,5 +21,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_11_26_131500) do
     t.boolean "portrait", default: false
     t.integer "pages_per_sheet", default: 3
     t.boolean "two_sided_flipped", default: true, null: false
+    t.string "token", null: false
+    t.index ["token"], name: "index_pdfs_on_token", unique: true
   end
 end

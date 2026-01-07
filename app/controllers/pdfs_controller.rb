@@ -2,7 +2,7 @@ require "stacked_pdf_generator"
 
 class PdfsController < ApplicationController
   def new
-    @pdf = params[:id] ? Pdf.find(params[:id]) : Pdf.new(paper_size: "A4", pages_per_sheet: 3, autoscale: "pdfjam")
+    @pdf = params[:id] ? find_pdf : Pdf.new(paper_size: "A4", pages_per_sheet: 3, autoscale: "pdfjam")
   end
 
   def create
@@ -23,7 +23,7 @@ class PdfsController < ApplicationController
   end
 
   def update
-    @pdf = Pdf.find(params[:id])
+    @pdf = find_pdf
     if @pdf.update(pdf_params)
       result = process_pdf(@pdf)
       if result.success?
@@ -40,14 +40,21 @@ class PdfsController < ApplicationController
   end
 
   def download
-    @pdf = Pdf.find(params[:id])
+    @pdf = find_pdf
     send_file output_file_path(@pdf), type: "application/pdf", disposition: "inline"
-  rescue
+  rescue ActiveRecord::RecordNotFound
+    flash[:alert] = "PDF not found"
+    redirect_to root_path
+  rescue Errno::ENOENT
     flash[:alert] = "File not found"
     redirect_to root_path
   end
 
   private
+
+  def find_pdf
+    Pdf.find_by!(token: params[:id])
+  end
 
   def pdf_params
     permitted = params.require(:pdf).permit(

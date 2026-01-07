@@ -1,6 +1,8 @@
 class Pdf < ApplicationRecord
   mount_uploader :file, PdfFileUploader
 
+  before_create :generate_token
+
   validates_presence_of :file
   validates :paper_size, presence: true, inclusion: { in: %w[A4 A3] }
   validates :pages_per_sheet, presence: true, numericality: { only_integer: true, greater_than: 0 }
@@ -16,4 +18,15 @@ class Pdf < ApplicationRecord
     message: "4 space-separated numbers (can include decimals, negative values allowed)",
     allow_blank: true
   }
+
+  # Use token instead of id in URLs
+  def to_param
+    token
+  end
+
+  private
+
+  def generate_token
+    self.token = SecureRandom.hex(6)
+  end
 end
