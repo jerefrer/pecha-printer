@@ -54,6 +54,8 @@ class PdfsController < ApplicationController
 
   def find_pdf
     Pdf.find_by!(token: params[:id])
+  rescue ActiveRecord::RecordNotFound
+    redirect_to root_path
   end
 
   def pdf_params
