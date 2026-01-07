@@ -59,6 +59,7 @@ group :development do
 
   gem "capistrano", "~> 3.19"
   gem "capistrano-rails", "~> 1.6"
+  gem "capistrano-rails-console", require: false
   gem "capistrano-passenger", "~> 0.2.1"
   gem "capistrano-rbenv", "~> 2.2"
   gem "ed25519", "~> 1.3"

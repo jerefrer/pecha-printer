@@ -4,6 +4,7 @@ require "capistrano/setup"
 # Include default deployment tasks
 require 'stringio'
 require "capistrano/deploy"
+require "capistrano/rails/console"
 
 # Load the SCM plugin appropriate to your project:
 #
