@@ -185,7 +185,7 @@
 
   <%= form.submit "Process PDF" %>
   <% if @pdf.persisted? %>
-  <%= link_to "Download Processed PDF", download_pdf_path(@pdf.id), role: "button", download: true, class: "pico-background-green-400", style: "display: block; margin-bottom: 1em;" %>
+  <%= link_to "Download Processed PDF", download_pdf_path(@pdf), role: "button", download: true, class: "pico-background-green-400", style: "display: block; margin-bottom: 1em;" %>
   <%= link_to "Process another PDF", new_pdf_path, role: "button", class: "pico-background-orange-500", style: "display: block" %>
   <% end %>
   <% end %>
@@ -193,7 +193,7 @@
 
 <% if @pdf.persisted? %>
 <div id="preview">
-  <embed src="<%= download_pdf_path(@pdf.id) %>#toolbar=0" type="application/pdf" width="100%" height="100%" />
+  <embed src="<%= download_pdf_path(@pdf) %>#toolbar=0" type="application/pdf" width="100%" height="100%" />
 </div>
 <% else %>
 <div id="welcome">
