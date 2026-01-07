@@ -3,6 +3,9 @@
 
 set :output, "log/cron.log"
 
+# Ensure cron can find ruby/bundle
+env :PATH, ENV["PATH"]
+
 every 1.hour do
   rake "pdfs:cleanup"
 end
