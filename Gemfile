@@ -73,7 +73,7 @@ group :test do
 end
 
 
-gem "ostruct", "~> 0.6.0"
+gem "ostruct", "~> 0.6.1"
 
 gem "pg", "~> 1.5"
 
