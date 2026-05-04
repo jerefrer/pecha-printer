@@ -194,7 +194,51 @@
   <%= link_to "Process another PDF", new_pdf_path, role: "button", class: "pico-background-orange-500", style: "display: block" %>
   <% end %>
   <% end %>
+
+  <button type="button"
+          class="help-button"
+          aria-label="Help: special cases"
+          data-action="click->help#open">?</button>
 </div>
+
+<dialog id="help-modal" data-help-target="dialog">
+  <article>
+    <header>
+      <button type="button"
+              aria-label="Close"
+              rel="prev"
+              data-action="click->help#close"></button>
+      <p><strong>Special cases</strong></p>
+    </header>
+
+    <section>
+      <h4>Print a TibetDoc pecha in Shechen style (on A3)</h4>
+      <p>
+        Export your pecha from TibetDoc in <strong>Legal</strong> paper size,
+        with the options shown below: tick <em>Show crop marks</em>, set
+        <em>Distance between crops</em> to <strong>3.35</strong>, and leave
+        <em>Two pecha sides per print page</em> unticked.
+      </p>
+      <figure>
+        <%= image_tag "tibetdoc-shechen-config.png",
+                       alt: "TibetDoc export options for Shechen-style pecha",
+                       style: "max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 4px;" %>
+        <figcaption><small>TibetDoc export settings for Shechen-style pecha.</small></figcaption>
+      </figure>
+      <p style="margin-top: 1rem;">
+        Then click the button below to apply the matching Pecha Printer settings
+        (A3, Landscape, Autoscale: No, Margins: None, Input has crop marks):
+      </p>
+      <p>
+        <button type="button"
+                class="pico-background-green-400"
+                data-action="click->help#applyShechen">
+          Apply Shechen style
+        </button>
+      </p>
+    </section>
+  </article>
+</dialog>
 
 <% if @pdf.persisted? %>
 <div id="preview">

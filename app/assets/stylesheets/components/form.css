@@ -80,3 +80,50 @@ input[type=number] {
 [type=checkbox]~label:not(:last-of-type), [type=radio]~label:not(:last-of-type) {
   margin-inline-end: 0.2em;
 }
+
+.help-button {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  border: none;
+  background: #535f7a;
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: bold;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  z-index: 100;
+  padding: 0;
+}
+
+.help-button:hover, .help-button:focus {
+  background: #6a7795;
+  outline: none;
+}
+
+#help-modal[open] {
+  max-width: min(720px, 92vw);
+  border: none;
+  border-radius: 8px;
+  padding: 0;
+}
+
+#help-modal article {
+  padding: 1.5rem 2rem 2rem;
+}
+
+#help-modal h4 {
+  margin-top: 0;
+}
+
+#help-modal figure {
+  margin: 1rem 0 0;
+}
+
+#help-modal::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
