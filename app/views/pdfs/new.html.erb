@@ -52,6 +52,11 @@
         <%= form.check_box :two_sided_flipped, { id: 'pdf_two_sided_flipped', checked: @pdf.two_sided_flipped? }, '1', '0' %>
         <%= form.label :two_sided_flipped, 'Flip even pages for two-sided printing' %>
       </div>
+
+      <div style="margin-top: 1rem;">
+        <%= form.check_box :crop_from_marks, { id: 'pdf_crop_from_marks', checked: @pdf.crop_from_marks? }, '1', '0' %>
+        <%= form.label :crop_from_marks, 'Input PDF has crop marks (auto-crop each page)' %>
+      </div>
     </div>
 
   </div>

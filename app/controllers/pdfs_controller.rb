@@ -61,7 +61,7 @@ class PdfsController < ApplicationController
   def pdf_params
     permitted = params.require(:pdf).permit(
       :file, :pages_per_sheet, :paper_size, :portrait, :pages_per_sheet, :autoscale, :sheet_margins,
-      :two_sided_flipped
+      :two_sided_flipped, :crop_from_marks
     )
 
     # Clean up any empty border values
@@ -80,7 +80,8 @@ class PdfsController < ApplicationController
       autoscale: pdf.autoscale,
       portrait: pdf.portrait,
       sheet_margins: pdf.sheet_margins,
-      two_sided_flipped: pdf.two_sided_flipped
+      two_sided_flipped: pdf.two_sided_flipped,
+      crop_from_marks: pdf.crop_from_marks
     )
   end
 
