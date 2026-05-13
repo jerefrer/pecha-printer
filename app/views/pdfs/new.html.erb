@@ -225,7 +225,24 @@
         </div>
 
         <%# CTA — Task 6 %>
-        <div data-component="cta-placeholder" class="card p-4 text-center text-ink-muted">[CTA placeholder]</div>
+        <% if @pdf.persisted? %>
+          <div class="flex flex-col gap-3 animate-cta-in">
+            <%= link_to download_pdf_path(@pdf),
+                  download: true,
+                  class: "btn-success no-underline" do %>
+              <%= lucide_icon "download", class: "w-5 h-5" %>
+              Télécharger le PDF
+            <% end %>
+            <%= form.submit "↻ Re-traiter avec ces options", class: "btn-ghost" %>
+          </div>
+        <% else %>
+          <div class="flex flex-col gap-3 animate-cta-in">
+            <button type="submit" class="btn-primary">
+              <%= lucide_icon "printer", class: "w-5 h-5" %>
+              Imprimer le PDF
+            </button>
+          </div>
+        <% end %>
 
       <% end %>
     </div>
