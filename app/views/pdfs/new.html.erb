@@ -96,7 +96,132 @@
         </div>
 
         <%# Custom panel — Task 5 %>
-        <div data-component="custom-placeholder" class="text-center text-ink-muted text-sm">[custom panel placeholder]</div>
+        <div class="flex justify-center">
+          <button type="button"
+                  class="inline-flex items-center gap-2 px-3 py-2 rounded text-sm text-ink-muted hover:text-ink hover:bg-canvas-hover transition-colors"
+                  aria-expanded="false"
+                  data-custom-panel-target="toggle"
+                  data-action="click->custom-panel#toggle">
+            <%= lucide_icon "sliders-horizontal", class: "w-4 h-4" %>
+            <span>Options personnalisées</span>
+            <%= lucide_icon "chevron-down", class: "w-4 h-4 transition-transform duration-200", data: { custom_panel_target: "chevron" } %>
+          </button>
+        </div>
+
+        <div class="overflow-hidden max-h-0 transition-[max-height] duration-300 ease-out [&.is-open]:max-h-[2000px]"
+             data-custom-panel-target="panel">
+          <div class="card p-6 flex flex-col gap-6">
+
+            <%# Group: Papier %>
+            <section>
+              <h3 class="text-xs font-semibold uppercase tracking-wider text-ink-muted mb-3">Papier</h3>
+              <div class="flex flex-col gap-4">
+                <div>
+                  <div class="text-sm text-ink-muted mb-2">Taille</div>
+                  <div class="flex flex-wrap gap-1 segmented">
+                    <%= form.radio_button :paper_size, 'A4', id: "pdf_paper_size_a4" %>
+                    <%= form.label :paper_size_a4, 'A4' %>
+                    <%= form.radio_button :paper_size, 'A3', id: "pdf_paper_size_a3" %>
+                    <%= form.label :paper_size_a3, 'A3' %>
+                  </div>
+                </div>
+                <div>
+                  <div class="text-sm text-ink-muted mb-2">Orientation</div>
+                  <div class="flex flex-wrap gap-1 segmented">
+                    <%= form.radio_button :portrait, false, id: "pdf_portrait_no" %>
+                    <%= form.label :portrait_no, 'Paysage' %>
+                    <%= form.radio_button :portrait, true, id: "pdf_portrait_yes" %>
+                    <%= form.label :portrait_yes, 'Portrait' %>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <%# Group: Mise en page %>
+            <section>
+              <h3 class="text-xs font-semibold uppercase tracking-wider text-ink-muted mb-3">Mise en page</h3>
+              <div class="flex flex-col gap-4">
+                <div>
+                  <div class="text-sm text-ink-muted mb-2">Pages par feuille</div>
+                  <div class="flex flex-wrap gap-1 segmented">
+                    <% %w[2 3 4 5 6 7 8].each do |n| %>
+                      <%= form.radio_button :pages_per_sheet, n, id: "pdf_pages_per_sheet_#{n}" %>
+                      <%= form.label "pages_per_sheet_#{n}".to_sym, n %>
+                    <% end %>
+                  </div>
+                </div>
+                <div>
+                  <div class="text-sm text-ink-muted mb-2">Autoscale</div>
+                  <div class="flex flex-wrap gap-1 segmented">
+                    <%= form.radio_button :autoscale, 'none', id: "pdf_autoscale_none" %>
+                    <%= form.label :autoscale_none, 'Aucun' %>
+                    <%= form.radio_button :autoscale, 'pdfjam', id: "pdf_autoscale_pdfjam" %>
+                    <%= form.label :autoscale_pdfjam, 'Ajuste au papier' %>
+                    <%= form.radio_button :autoscale, 'podofo', id: "pdf_autoscale_podofo" %>
+                    <%= form.label :autoscale_podofo, 'Recadre sur contenu' %>
+                  </div>
+                </div>
+                <label class="inline-flex items-center gap-2 text-sm cursor-pointer">
+                  <%= form.check_box :two_sided_flipped, { id: 'pdf_two_sided_flipped', class: 'w-[18px] h-[18px] accent-accent' }, '1', '0' %>
+                  <span>Retourner les pages paires (impression recto-verso)</span>
+                </label>
+                <label class="inline-flex items-center gap-2 text-sm cursor-pointer">
+                  <%= form.check_box :crop_from_marks, { id: 'pdf_crop_from_marks', class: 'w-[18px] h-[18px] accent-accent' }, '1', '0' %>
+                  <span>Le PDF contient des marques de coupe (auto-recadrage)</span>
+                </label>
+              </div>
+            </section>
+
+            <%# Group: Marges %>
+            <section class="margins-section">
+              <h3 class="text-xs font-semibold uppercase tracking-wider text-ink-muted mb-3">Marges (mm)</h3>
+              <div class="flex flex-wrap gap-1 mb-3">
+                <%= form.radio_button :sheet_margin_mode, 'none', class: 'margin-mode-radio', id: 'pdf_sheet_margin_mode_none', data: { action: "change->margins#updateMode", margins_target: "mode" } %>
+                <%= form.label :sheet_margin_mode_none, 'Aucune' %>
+                <%= form.radio_button :sheet_margin_mode, 'all', class: 'margin-mode-radio', id: 'pdf_sheet_margin_mode_all', data: { action: "change->margins#updateMode", margins_target: "mode" } %>
+                <%= form.label :sheet_margin_mode_all, 'Toutes' %>
+                <%= form.radio_button :sheet_margin_mode, 'horizontal_vertical', checked: true, class: 'margin-mode-radio', id: 'pdf_sheet_margin_mode_horizontal_vertical', data: { action: "change->margins#updateMode", margins_target: "mode" } %>
+                <%= form.label :sheet_margin_mode_horizontal_vertical, 'Horizontal/Vertical' %>
+                <%= form.radio_button :sheet_margin_mode, 'custom', class: 'margin-mode-radio', id: 'pdf_sheet_margin_mode_custom', data: { action: "change->margins#updateMode", margins_target: "mode" } %>
+                <%= form.label :sheet_margin_mode_custom, 'Personnalisées' %>
+              </div>
+
+              <div class="mt-2" data-margins-target="inputs">
+                <small class="block text-center text-xs text-ink-muted mb-3">Positif = ajoute des marges. Négatif = recadre.</small>
+                <div data-margins-target="all">
+                  <%= form.label :sheet_margin_all, 'Marge sur les 4 côtés', class: "block text-sm text-ink-muted mb-1" %>
+                  <%= form.number_field :sheet_margin_all, step: 'any', placeholder: '0mm', class: 'margin-input', data: { target: 'all' } %>
+                </div>
+                <div data-margins-target="hv">
+                  <div class="flex gap-6">
+                    <div>
+                      <%= form.label :sheet_margin_horizontal, 'Gauche & droite', class: "block text-sm text-ink-muted mb-1" %>
+                      <%= form.number_field :sheet_margin_horizontal, step: 'any', placeholder: '0mm', value: 0, class: 'margin-input', data: { target: 'horizontal' } %>
+                    </div>
+                    <div>
+                      <%= form.label :sheet_margin_vertical, 'Haut & bas', class: "block text-sm text-ink-muted mb-1" %>
+                      <%= form.number_field :sheet_margin_vertical, step: 'any', placeholder: '0mm', value: -5, class: 'margin-input', data: { target: 'vertical' } %>
+                    </div>
+                  </div>
+                </div>
+                <div data-margins-target="custom">
+                  <div class="margin-custom-grid">
+                    <div></div>
+                    <%= form.number_field :sheet_margin_top, step: 'any', placeholder: '0mm', class: 'margin-input', data: { target: 'top' } %>
+                    <div></div>
+                    <%= form.number_field :sheet_margin_left, step: 'any', placeholder: '0mm', class: 'margin-input', data: { target: 'left' } %>
+                    <div></div>
+                    <%= form.number_field :sheet_margin_right, step: 'any', placeholder: '0mm', class: 'margin-input', data: { target: 'right' } %>
+                    <div></div>
+                    <%= form.number_field :sheet_margin_bottom, step: 'any', placeholder: '0mm', class: 'margin-input', data: { target: 'bottom' } %>
+                    <div></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+          </div>
+        </div>
 
         <%# CTA — Task 6 %>
         <div data-component="cta-placeholder" class="card p-4 text-center text-ink-muted">[CTA placeholder]</div>
