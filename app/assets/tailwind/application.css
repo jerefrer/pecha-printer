@@ -86,8 +86,8 @@
   }
   @media (prefers-color-scheme: dark) {
     body {
-      background-color: #16181c;
-      color: #ececec;
+      background-color: var(--color-canvas-dark);
+      color: var(--color-canvas-dark-text);
     }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -161,7 +161,7 @@
     font-size: 0.875rem;
     background-color: var(--color-canvas-surface);
     color: var(--color-ink);
-    transition: colors 150ms;
+    transition: background-color 150ms, border-color 150ms, color 150ms;
   }
   .margins-section input[type="radio"]:checked + label {
     background-color: var(--color-accent);
@@ -191,19 +191,21 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  .card {
-    background-color: #1f2227;
-    border-color: #2e333a;
-  }
-  .btn-ghost {
-    background-color: #1f2227;
-    color: #ececec;
-    border-color: #3e444c;
-  }
-  .margins-section input[type="radio"] + label {
-    background-color: #1f2227;
-    border-color: #2e333a;
-    color: #ececec;
+@layer components {
+  @media (prefers-color-scheme: dark) {
+    .card {
+      background-color: var(--color-canvas-dark-surface);
+      border-color: var(--color-canvas-dark-border);
+    }
+    .btn-ghost {
+      background-color: var(--color-canvas-dark-surface);
+      color: var(--color-canvas-dark-text);
+      border-color: var(--color-canvas-dark-border-strong);
+    }
+    .margins-section input[type="radio"] + label {
+      background-color: var(--color-canvas-dark-surface);
+      border-color: var(--color-canvas-dark-border);
+      color: var(--color-canvas-dark-text);
+    }
   }
 }
