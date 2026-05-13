@@ -269,7 +269,7 @@
     </div>
 
     <% if @pdf.persisted? %>
-      <div class="flex-1 min-w-0 h-[calc(100vh-5rem)] min-h-[600px] rounded-lg border border-canvas-border bg-canvas-surface shadow-card overflow-hidden animate-preview-in">
+      <div class="flex-1 min-w-0 h-[calc(100vh-5rem)] min-h-[600px] rounded-[5px] border border-canvas-border bg-canvas-surface shadow-card overflow-hidden animate-preview-in">
         <embed src="<%= download_pdf_path(@pdf) %>#toolbar=0"
                type="application/pdf"
                class="block w-full h-full border-0" />
