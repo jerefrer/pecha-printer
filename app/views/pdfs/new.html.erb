@@ -214,13 +214,13 @@
               </div>
 
               <div class="mt-2" data-margins-target="inputs">
-                <small class="block text-center text-xs text-ink-muted mb-3"><%= t("custom.margins.help") %></small>
+                <small class="block text-xs text-ink-muted mb-3"><%= t("custom.margins.help") %></small>
                 <div data-margins-target="all">
                   <label for="pdf_sheet_margin_all" class="field-label"><%= t("custom.margins.all_label") %></label>
                   <%= form.number_field :sheet_margin_all, step: 'any', placeholder: '0mm', class: 'margin-input', data: { target: 'all' } %>
                 </div>
                 <div data-margins-target="hv">
-                  <div class="flex gap-6 justify-center">
+                  <div class="flex gap-6">
                     <div>
                       <label for="pdf_sheet_margin_horizontal" class="field-label"><%= t("custom.margins.lr") %></label>
                       <%= form.number_field :sheet_margin_horizontal, step: 'any', placeholder: '0mm', value: 0, class: 'margin-input', data: { target: 'horizontal' } %>
