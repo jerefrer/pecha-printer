@@ -109,7 +109,8 @@
         </div>
 
         <div class="overflow-hidden max-h-0 transition-[max-height] duration-300 ease-out [&.is-open]:max-h-[2000px]"
-             data-custom-panel-target="panel">
+             data-custom-panel-target="panel"
+             aria-hidden="true">
           <div class="card p-6 flex flex-col gap-6">
 
             <%# Group: Papier %>
@@ -175,7 +176,7 @@
             <%# Group: Marges %>
             <section class="margins-section">
               <h3 class="text-xs font-semibold uppercase tracking-wider text-ink-muted mb-3">Marges (mm)</h3>
-              <div class="flex flex-wrap gap-1 mb-3">
+              <div class="flex flex-wrap gap-1 mb-3 segmented">
                 <%= form.radio_button :sheet_margin_mode, 'none', class: 'margin-mode-radio', id: 'pdf_sheet_margin_mode_none', data: { action: "change->margins#updateMode", margins_target: "mode" } %>
                 <%= form.label :sheet_margin_mode_none, 'Aucune' %>
                 <%= form.radio_button :sheet_margin_mode, 'all', class: 'margin-mode-radio', id: 'pdf_sheet_margin_mode_all', data: { action: "change->margins#updateMode", margins_target: "mode" } %>

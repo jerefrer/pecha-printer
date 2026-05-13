@@ -149,11 +149,12 @@
     box-shadow: var(--shadow-card);
   }
 
-  /* Margin widget — kept compatible with margins_controller.js */
-  .margins-section input[type="radio"] {
+  /* Segmented radio pill buttons — shared by all radio groups in the Personnalisé panel
+     (Papier, Orientation, Pages par feuille, Autoscale, Marges mode). */
+  .segmented input[type="radio"] {
     display: none;
   }
-  .margins-section input[type="radio"] + label {
+  .segmented input[type="radio"] + label {
     padding: 0.375rem 0.75rem;
     border: 1px solid var(--color-canvas-border);
     border-radius: calc(var(--radius) * 0.5);
@@ -163,7 +164,7 @@
     color: var(--color-ink);
     transition: background-color 150ms, border-color 150ms, color 150ms;
   }
-  .margins-section input[type="radio"]:checked + label {
+  .segmented input[type="radio"]:checked + label {
     background-color: var(--color-accent);
     border-color: var(--color-accent);
     color: #ffffff;
@@ -202,7 +203,7 @@
       color: var(--color-canvas-dark-text);
       border-color: var(--color-canvas-dark-border-strong);
     }
-    .margins-section input[type="radio"] + label {
+    .segmented input[type="radio"] + label {
       background-color: var(--color-canvas-dark-surface);
       border-color: var(--color-canvas-dark-border);
       color: var(--color-canvas-dark-text);
