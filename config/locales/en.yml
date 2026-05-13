@@ -1,31 +1,64 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
 en:
-  hello: "Hello world"
+  app:
+    title: "Pecha Printer"
+    tagline: "Generate a print-ready PDF in pecha layout, cut and stack."
+  dropzone:
+    primary: "Drop a PDF here"
+    secondary: "or click to browse"
+  chip:
+    replace_aria: "Choose another file"
+    remove_aria: "Remove file"
+  presets:
+    label: "Choose a style"
+    standard_a4:
+      title: "Standard A4"
+    standard_a3:
+      title: "Standard A3"
+    shechen:
+      title: "Shechen"
+      badge: "TibetDoc"
+      hint: "For PDFs exported from TibetDoc"
+      help_link: "See export config →"
+      popover_title: "TibetDoc export for Shechen"
+      popover_body_html: "In TibetDoc, export your pecha in <strong>Legal</strong>, tick <strong>Show crop marks</strong>, set <strong>Distance between crops</strong> to <strong>3.35</strong>, and leave <strong>Two pecha sides per print page</strong> unchecked."
+    specs:
+      three_per_sheet: "3 pages per sheet"
+      fit_to_paper: "Fit to paper"
+      duplex: "Two-sided"
+      a3_three_per_sheet: "A3 · 3 pages per sheet"
+      crop_marks: "Detect crop marks"
+  custom:
+    toggle: "Custom options"
+    paper:
+      title: "Paper"
+      size: "Size"
+      orientation: "Orientation"
+      landscape: "Landscape"
+      portrait: "Portrait"
+    layout:
+      title: "Layout"
+      pages_per_sheet: "Pages per sheet"
+      autoscale: "Autoscale"
+      autoscale_none: "None"
+      autoscale_fit: "Fit to paper"
+      autoscale_crop: "Crop to content"
+      flip_label: "Flip even pages (two-sided printing)"
+      crop_marks_label: "PDF contains crop marks (auto-crop)"
+    margins:
+      title: "Margins (mm)"
+      none: "None"
+      all: "All"
+      hv: "Horizontal/Vertical"
+      custom: "Custom"
+      help: "Positive = add margins. Negative = trim."
+      all_label: "Margin on all 4 sides"
+      lr: "Left & right"
+      tb: "Top & bottom"
+  cta:
+    generate: "Generate PDF"
+    download: "Download PDF"
+    regenerate: "Re-generate with these options"
+  theme:
+    toggle_aria: "Toggle theme"
+  locale:
+    switch_aria: "Switch language"
