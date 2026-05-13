@@ -2,7 +2,7 @@
 
 Print your pecha PDFs, cut and stack them only once instead of manually reordering pages one by one.
 
-![Demo](demo.jpeg)
+![Demo](demo.png)
 
 ## Requirements (pdfjam, poppler, podofocrop)
 
