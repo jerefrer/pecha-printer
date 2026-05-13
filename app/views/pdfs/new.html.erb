@@ -1,9 +1,24 @@
+<%# Theme toggle — floating top-right %>
+<div class="fixed top-4 right-4 z-30" data-controller="theme">
+  <button type="button"
+          class="theme-toggle"
+          data-action="click->theme#toggle"
+          aria-label="Basculer le thème">
+    <span data-theme-target="sunIcon" class="hidden dark:inline-flex">
+      <%= lucide_icon "sun", class: "w-4 h-4" %>
+    </span>
+    <span data-theme-target="moonIcon" class="inline-flex dark:hidden">
+      <%= lucide_icon "moon", class: "w-4 h-4" %>
+    </span>
+  </button>
+</div>
+
 <div class="min-h-screen flex justify-center [.has-preview_&]:justify-start p-6 lg:p-10">
   <div class="flex gap-8 items-start w-full max-w-[760px] [.has-preview_&]:max-w-none">
-    <div class="flex flex-col gap-8 w-full [.has-preview_&]:max-w-[380px]">
-      <header class="text-center [.has-preview_&]:text-left">
-        <h1 class="m-0 text-3xl font-bold tracking-tight [.has-preview_&]:text-xl">Pecha Printer</h1>
-        <p class="mt-2 text-ink-muted [.has-preview_&]:hidden">
+    <div class="flex flex-col gap-8 w-full [.has-preview_&]:max-w-[400px]">
+      <header class="text-center [.has-preview_&]:text-left animate-fade-in">
+        <h1 class="m-0 text-4xl font-bold tracking-tight [.has-preview_&]:text-2xl">Pecha Printer</h1>
+        <p class="mt-3 text-ink-muted text-base [.has-preview_&]:hidden">
           Imprime un PDF en mode pecha à découper et à empiler.
         </p>
       </header>
@@ -12,28 +27,28 @@
             html: { class: "flex flex-col gap-6" },
             data: {
               controller: "margins preset dropzone custom-panel",
-              action: "submit->margins#submitForm"
+              action: "submit->margins#submitForm",
+              preset_persisted_value: @pdf.persisted?
             } do |form| %>
 
         <%= form.hidden_field :sheet_margins, data: { margins_target: "form" } %>
 
-        <%# Drop zone — Task 3 %>
+        <%# Drop zone or file chip %>
         <% if @pdf.persisted? %>
           <div class="card flex items-center gap-3 px-4 py-3 animate-chip-in">
             <%= lucide_icon "file-text", class: "w-5 h-5 text-accent shrink-0" %>
-            <span class="flex-1 font-semibold break-all"><%= @pdf.file.filename %></span>
+            <span class="flex-1 font-semibold text-sm break-all"><%= @pdf.file.filename %></span>
             <%= link_to new_pdf_path,
-                  class: "w-8 h-8 inline-flex items-center justify-center rounded text-ink-muted hover:text-red-600 hover:bg-canvas-hover transition-colors",
+                  class: "w-8 h-8 inline-flex items-center justify-center rounded-md text-ink-muted hover:text-red-600 hover:bg-canvas-hover transition-colors",
                   aria: { label: "Choisir un autre fichier" } do %>
               <%= lucide_icon "x", class: "w-4 h-4" %>
             <% end %>
           </div>
         <% else %>
-          <div data-dropzone-target="dropzone"
-               class="card relative flex flex-col items-center justify-center gap-3 p-10 cursor-pointer border-2 border-dashed border-canvas-border-strong hover:border-accent transition-colors duration-200 [&.is-dragover]:border-accent [&.is-dragover]:bg-accent-soft [&.is-dragover]:scale-[1.01]">
-            <%= lucide_icon "upload-cloud", class: "w-12 h-12 text-ink-muted animate-float" %>
-            <div class="text-lg font-semibold">Glisse un PDF ici</div>
-            <div class="text-sm text-ink-muted">ou clique pour parcourir</div>
+          <div data-dropzone-target="dropzone" class="dropzone">
+            <%= lucide_icon "upload-cloud", class: "w-8 h-8 dropzone-icon animate-float" %>
+            <div class="text-base font-semibold mt-1">Glisse un PDF ici</div>
+            <div class="text-xs text-ink-muted">ou clique pour parcourir</div>
             <%= form.file_field :file,
                   accept: "application/pdf",
                   class: "absolute inset-0 opacity-0 cursor-pointer",
@@ -43,10 +58,10 @@
           <div class="card flex items-center gap-3 px-4 py-3 animate-chip-in"
                data-dropzone-target="chip" hidden>
             <%= lucide_icon "file-text", class: "w-5 h-5 text-accent shrink-0" %>
-            <span class="flex-1 font-semibold break-all" data-dropzone-target="chipName"></span>
-            <span class="text-sm text-ink-muted shrink-0" data-dropzone-target="chipSize"></span>
+            <span class="flex-1 font-semibold text-sm break-all" data-dropzone-target="chipName"></span>
+            <span class="text-xs text-ink-muted shrink-0" data-dropzone-target="chipSize"></span>
             <button type="button"
-                    class="w-8 h-8 inline-flex items-center justify-center rounded text-ink-muted hover:text-red-600 hover:bg-canvas-hover transition-colors"
+                    class="w-8 h-8 inline-flex items-center justify-center rounded-md text-ink-muted hover:text-red-600 hover:bg-canvas-hover transition-colors"
                     data-action="click->dropzone#remove"
                     aria-label="Retirer le fichier">
               <%= lucide_icon "x", class: "w-4 h-4" %>
@@ -54,51 +69,61 @@
           </div>
         <% end %>
 
-        <%# Preset cards — Task 4 %>
-        <div class="text-center text-sm text-ink-muted">Choisis un style</div>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <% [
-            { name: "standard_a4", title: "Standard A4", specs: ["3 pages par feuille", "Ajuste au papier", "Recto-verso"] },
-            { name: "standard_a3", title: "Standard A3", specs: ["3 pages par feuille", "Ajuste au papier", "Recto-verso"] },
-            { name: "shechen", title: "Shechen TibetDoc", specs: ["3 pages par feuille", "Marques de coupe", "Recto-verso, A3"] }
-          ].each_with_index do |p, idx| %>
-            <div role="button"
-                     tabindex="0"
-                     class="preset card relative flex flex-col gap-2 p-5 text-left cursor-pointer transition-all duration-150 hover:-translate-y-px hover:shadow-card hover:border-canvas-border-strong [&.is-selected]:border-accent [&.is-selected]:bg-accent-soft [&.is-selected]:ring-2 [&.is-selected]:ring-accent-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent animate-preset-in"
-                     style="animation-delay: <%= 50 * (idx + 1) %>ms;"
-                     data-preset-name="<%= p[:name] %>"
-                     data-preset-target="card"
-                     data-action="click->preset#select keydown->preset#selectKeydown">
-              <span class="text-base font-bold"><%= p[:title] %></span>
-              <ul class="m-0 p-0 list-none text-sm text-ink-muted flex flex-col gap-0.5">
-                <% p[:specs].each do |s| %><li><%= s %></li><% end %>
-              </ul>
-              <% if p[:name] == "shechen" %>
-                <span class="mt-auto pt-3 text-xs text-ink-muted inline-flex items-center gap-1">
-                  Pour PDF TibetDoc ·
-                  <button type="button"
-                          class="text-accent underline bg-transparent border-0 p-0 cursor-pointer text-xs"
-                          data-action="click->preset#toggleHelp">voir l'export config</button>
-                </span>
-                <div class="absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 w-[min(360px,92vw)] z-10 card p-4 shadow-floating text-left"
-                     data-preset-target="popover" hidden>
-                  <h4 class="m-0 mb-2 text-sm font-semibold">Export TibetDoc pour Shechen</h4>
-                  <p class="m-0 mb-2 text-[13px] leading-snug">
-                    Dans TibetDoc, exporte ton pecha en <strong>Legal</strong>, coche <em>Show crop marks</em>, mets <em>Distance between crops</em> à <strong>3.35</strong>, et laisse <em>Two pecha sides per print page</em> décoché.
-                  </p>
-                  <%= image_tag "tibetdoc-shechen-config.png",
-                        alt: "TibetDoc export options for Shechen-style pecha",
-                        class: "w-full rounded border border-canvas-border" %>
+        <%# Preset cards %>
+        <div class="flex flex-col gap-3">
+          <div class="text-center text-sm text-ink-muted font-medium">Choisis un style</div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <% [
+              { name: "standard_a4", title: "Standard A4", specs: ["3 pages par feuille", "Ajustement au papier", "Recto-verso"] },
+              { name: "standard_a3", title: "Standard A3", specs: ["3 pages par feuille", "Ajustement au papier", "Recto-verso"] },
+              { name: "shechen", title: "Shechen", specs: ["A3 · 3 pages par feuille", "Marques de coupe", "Recto-verso"], badge: "TibetDoc" }
+            ].each_with_index do |p, idx| %>
+              <div role="button"
+                   tabindex="0"
+                   class="preset animate-preset-in focus-visible:ring-2 focus-visible:ring-accent"
+                   style="animation-delay: <%= 60 * (idx + 1) %>ms;"
+                   data-preset-name="<%= p[:name] %>"
+                   data-preset-target="card"
+                   data-action="click->preset#select keydown->preset#selectKeydown">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="preset__title"><%= p[:title] %></span>
+                  <% if p[:badge] %>
+                    <span class="preset__badge"><%= p[:badge] %></span>
+                  <% end %>
                 </div>
-              <% end %>
-            </div>
-          <% end %>
+                <ul class="preset__specs mt-2">
+                  <% p[:specs].each do |s| %><li><%= s %></li><% end %>
+                </ul>
+                <% if p[:name] == "shechen" %>
+                  <div class="preset__hint">
+                    <div>Pour PDF exporté depuis TibetDoc</div>
+                    <button type="button" data-action="click->preset#toggleHelp">
+                      Voir la config d'export →
+                    </button>
+                  </div>
+                  <div class="popover" data-preset-target="popover" hidden>
+                    <h4 class="m-0 mb-2 text-sm font-semibold">Export TibetDoc pour Shechen</h4>
+                    <p class="m-0 mb-3 text-[13px] leading-snug text-ink-muted">
+                      Dans TibetDoc, exporte ton pecha en <strong class="text-ink">Legal</strong>, coche
+                      <strong class="text-ink">Show crop marks</strong>, mets
+                      <strong class="text-ink">Distance between crops</strong> à
+                      <strong class="text-ink">3.35</strong>, et laisse
+                      <strong class="text-ink">Two pecha sides per print page</strong> décoché.
+                    </p>
+                    <%= image_tag "tibetdoc-shechen-config.png",
+                          alt: "Réglages d'export TibetDoc",
+                          class: "w-full rounded border border-canvas-border" %>
+                  </div>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
         </div>
 
-        <%# Custom panel — Task 5 %>
+        <%# Custom panel toggle %>
         <div class="flex justify-center">
           <button type="button"
-                  class="inline-flex items-center gap-2 px-3 py-2 rounded text-sm text-ink-muted hover:text-ink hover:bg-canvas-hover transition-colors"
+                  class="custom-toggle"
                   aria-expanded="false"
                   data-custom-panel-target="toggle"
                   data-action="click->custom-panel#toggle">
@@ -108,17 +133,17 @@
           </button>
         </div>
 
+        <%# Custom panel body %>
         <div class="overflow-hidden max-h-0 transition-[max-height] duration-300 ease-out [&.is-open]:max-h-[2000px]"
              data-custom-panel-target="panel"
              aria-hidden="true">
           <div class="card p-6 flex flex-col gap-6">
 
-            <%# Group: Papier %>
             <section>
-              <h3 class="text-xs font-semibold uppercase tracking-wider text-ink-muted mb-3">Papier</h3>
+              <h3 class="group-title">Papier</h3>
               <div class="flex flex-col gap-4">
                 <div>
-                  <div class="text-sm text-ink-muted mb-2">Taille</div>
+                  <div class="field-label">Taille</div>
                   <div class="flex flex-wrap gap-1 segmented">
                     <%= form.radio_button :paper_size, 'A4', id: "pdf_paper_size_a4" %>
                     <%= form.label :paper_size_a4, 'A4' %>
@@ -127,7 +152,7 @@
                   </div>
                 </div>
                 <div>
-                  <div class="text-sm text-ink-muted mb-2">Orientation</div>
+                  <div class="field-label">Orientation</div>
                   <div class="flex flex-wrap gap-1 segmented">
                     <%= form.radio_button :portrait, false, id: "pdf_portrait_no" %>
                     <%= form.label :portrait_no, 'Paysage' %>
@@ -138,12 +163,11 @@
               </div>
             </section>
 
-            <%# Group: Mise en page %>
             <section>
-              <h3 class="text-xs font-semibold uppercase tracking-wider text-ink-muted mb-3">Mise en page</h3>
+              <h3 class="group-title">Mise en page</h3>
               <div class="flex flex-col gap-4">
                 <div>
-                  <div class="text-sm text-ink-muted mb-2">Pages par feuille</div>
+                  <div class="field-label">Pages par feuille</div>
                   <div class="flex flex-wrap gap-1 segmented">
                     <% %w[2 3 4 5 6 7 8].each do |n| %>
                       <%= form.radio_button :pages_per_sheet, n, id: "pdf_pages_per_sheet_#{n}" %>
@@ -152,7 +176,7 @@
                   </div>
                 </div>
                 <div>
-                  <div class="text-sm text-ink-muted mb-2">Autoscale</div>
+                  <div class="field-label">Autoscale</div>
                   <div class="flex flex-wrap gap-1 segmented">
                     <%= form.radio_button :autoscale, 'none', id: "pdf_autoscale_none" %>
                     <%= form.label :autoscale_none, 'Aucun' %>
@@ -162,20 +186,19 @@
                     <%= form.label :autoscale_podofo, 'Recadre sur contenu' %>
                   </div>
                 </div>
-                <label class="inline-flex items-center gap-2 text-sm cursor-pointer">
+                <label class="inline-flex items-center gap-2 text-sm cursor-pointer text-ink">
                   <%= form.check_box :two_sided_flipped, { id: 'pdf_two_sided_flipped', class: 'w-[18px] h-[18px] accent-accent' }, '1', '0' %>
                   <span>Retourner les pages paires (impression recto-verso)</span>
                 </label>
-                <label class="inline-flex items-center gap-2 text-sm cursor-pointer">
+                <label class="inline-flex items-center gap-2 text-sm cursor-pointer text-ink">
                   <%= form.check_box :crop_from_marks, { id: 'pdf_crop_from_marks', class: 'w-[18px] h-[18px] accent-accent' }, '1', '0' %>
                   <span>Le PDF contient des marques de coupe (auto-recadrage)</span>
                 </label>
               </div>
             </section>
 
-            <%# Group: Marges %>
             <section class="margins-section">
-              <h3 class="text-xs font-semibold uppercase tracking-wider text-ink-muted mb-3">Marges (mm)</h3>
+              <h3 class="group-title">Marges (mm)</h3>
               <div class="flex flex-wrap gap-1 mb-3 segmented">
                 <%= form.radio_button :sheet_margin_mode, 'none', class: 'margin-mode-radio', id: 'pdf_sheet_margin_mode_none', data: { action: "change->margins#updateMode", margins_target: "mode" } %>
                 <%= form.label :sheet_margin_mode_none, 'Aucune' %>
@@ -190,17 +213,17 @@
               <div class="mt-2" data-margins-target="inputs">
                 <small class="block text-center text-xs text-ink-muted mb-3">Positif = ajoute des marges. Négatif = recadre.</small>
                 <div data-margins-target="all">
-                  <%= form.label :sheet_margin_all, 'Marge sur les 4 côtés', class: "block text-sm text-ink-muted mb-1" %>
+                  <label for="pdf_sheet_margin_all" class="field-label">Marge sur les 4 côtés</label>
                   <%= form.number_field :sheet_margin_all, step: 'any', placeholder: '0mm', class: 'margin-input', data: { target: 'all' } %>
                 </div>
                 <div data-margins-target="hv">
-                  <div class="flex gap-6">
+                  <div class="flex gap-6 justify-center">
                     <div>
-                      <%= form.label :sheet_margin_horizontal, 'Gauche & droite', class: "block text-sm text-ink-muted mb-1" %>
+                      <label for="pdf_sheet_margin_horizontal" class="field-label">Gauche & droite</label>
                       <%= form.number_field :sheet_margin_horizontal, step: 'any', placeholder: '0mm', value: 0, class: 'margin-input', data: { target: 'horizontal' } %>
                     </div>
                     <div>
-                      <%= form.label :sheet_margin_vertical, 'Haut & bas', class: "block text-sm text-ink-muted mb-1" %>
+                      <label for="pdf_sheet_margin_vertical" class="field-label">Haut & bas</label>
                       <%= form.number_field :sheet_margin_vertical, step: 'any', placeholder: '0mm', value: -5, class: 'margin-input', data: { target: 'vertical' } %>
                     </div>
                   </div>
@@ -224,19 +247,17 @@
           </div>
         </div>
 
-        <%# CTA — Task 6 %>
+        <%# CTA %>
         <% if @pdf.persisted? %>
-          <div class="flex flex-col gap-3 animate-cta-in">
-            <%= link_to download_pdf_path(@pdf),
-                  download: true,
-                  class: "btn-success no-underline" do %>
+          <div class="flex flex-col gap-3 animate-cta-in mt-2">
+            <%= link_to download_pdf_path(@pdf), download: true, class: "btn-success" do %>
               <%= lucide_icon "download", class: "w-5 h-5" %>
               Télécharger le PDF
             <% end %>
             <%= form.submit "↻ Re-traiter avec ces options", class: "btn-ghost" %>
           </div>
         <% else %>
-          <div class="flex flex-col gap-3 animate-cta-in">
+          <div class="flex flex-col gap-3 animate-cta-in mt-2">
             <button type="submit" class="btn-primary">
               <%= lucide_icon "printer", class: "w-5 h-5" %>
               Imprimer le PDF
@@ -257,8 +278,6 @@
   </div>
 </div>
 
-<%# When a preview exists, signal it to the outer container via a body class
-    so the [.has-preview_&]:* utilities in the layout activate. %>
 <% if @pdf.persisted? %>
   <script>document.body.classList.add("has-preview");</script>
 <% end %>

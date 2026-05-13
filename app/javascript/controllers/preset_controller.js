@@ -38,7 +38,10 @@ const PRESETS = {
 
 export default class extends Controller {
   static targets = ["card", "popover"];
-  static values = { current: { type: String, default: "standard_a4" } };
+  static values = {
+    current: { type: String, default: "standard_a4" },
+    persisted: { type: Boolean, default: false },
+  };
 
   connect() {
     this.form = this.element.closest("form");
@@ -47,12 +50,18 @@ export default class extends Controller {
     this.boundDocumentClick = (e) => this.closeHelpOutside(e);
     this.form.addEventListener("change", this.boundFormChange);
     document.addEventListener("click", this.boundDocumentClick);
-    // Detect which preset the current form state matches (if any) instead of
-    // unconditionally applying the default — otherwise we'd overwrite the
-    // persisted Shechen settings in State C with standard_a4 values.
-    const matched = this.detectMatchingPreset();
-    this.currentValue = matched || "";
-    this.refreshCardStyles();
+
+    if (this.persistedValue) {
+      // State C: form is pre-populated with persisted values. Detect which
+      // preset matches them (if any) — don't overwrite.
+      const matched = this.detectMatchingPreset();
+      this.currentValue = matched || "";
+      this.refreshCardStyles();
+    } else {
+      // State A/B: fresh form. Apply the default preset so all missing
+      // defaults (portrait, flip, crop, margins) get filled in.
+      this.apply(this.currentValue);
+    }
   }
 
   disconnect() {
@@ -77,6 +86,11 @@ export default class extends Controller {
   apply(name) {
     const preset = PRESETS[name];
     if (!preset) return;
+    // Suppress onFormChange while we batch-write all the field values —
+    // otherwise the synthetic change events fire in sequence and trip
+    // matchesCurrent() before the form has been fully updated.
+    this.applying = true;
+    this.currentValue = name;
     this.setRadio("pdf[paper_size]", preset.paper_size);
     this.setRadio("pdf[portrait]", preset.portrait);
     this.setRadio("pdf[pages_per_sheet]", preset.pages_per_sheet);
@@ -84,6 +98,7 @@ export default class extends Controller {
     this.setCheckbox("pdf[two_sided_flipped]", preset.two_sided_flipped === "1");
     this.setCheckbox("pdf[crop_from_marks]", preset.crop_from_marks === "1");
     this.setMarginMode(preset.sheet_margin_mode, preset.sheet_margins);
+    this.applying = false;
     this.refreshCardStyles();
   }
 
@@ -122,6 +137,7 @@ export default class extends Controller {
   }
 
   onFormChange(event) {
+    if (this.applying) return;
     if (event.target.closest(".preset")) return;
     if (event.target.closest('input[type="file"]')) return;
     if (!this.matchesCurrent()) {
