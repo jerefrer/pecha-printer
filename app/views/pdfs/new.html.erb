@@ -1,251 +1,286 @@
-<div id="form-container">
-  <h1>Pecha Printer</h1>
-
-  <!--
-  <% flash.each do |type, msg| %>
-    <div class="alert alert-<%= type == 'notice' ? 'success' : 'danger' %>">
-      <%= msg %>
-    </div>
+<%# Theme + locale toggles — floating top-right %>
+<div class="fixed top-4 right-4 z-30 flex items-center gap-2">
+  <%= link_to url_for(locale: (I18n.locale == :en ? :fr : :en)),
+        class: "lang-toggle",
+        aria: { label: t("locale.switch_aria") } do %>
+    <%= I18n.locale == :en ? "FR" : "EN" %>
   <% end %>
--->
-
-  <%= form_for @pdf, multipart: true, 
-    data: { 
-      controller: "margins",
-      action: "submit->margins#submitForm",
-      margins_target: "form"
-    } do |form|
-  %>
-
-  <%= form.hidden_field :sheet_margins %>
-
-  <% if @pdf.persisted? %>
-  <h2><%= @pdf.file.filename %></h2>
-  <% else %>
-  <div>
-    <%= form.file_field :file %>
+  <div data-controller="theme">
+    <button type="button"
+            class="theme-toggle"
+            data-action="click->theme#toggle"
+            aria-label="<%= t('theme.toggle_aria') %>">
+      <span class="hidden dark:inline-flex">
+        <%= lucide_icon "sun", class: "w-4 h-4" %>
+      </span>
+      <span class="inline-flex dark:hidden">
+        <%= lucide_icon "moon", class: "w-4 h-4" %>
+      </span>
+    </button>
   </div>
-  <% end %>
-
-  <div style="display: flex; gap: 4em;">
-
-    <div class="field">
-      <%= form.label :paper_size, "Paper size" %>
-
-      <%= form.radio_button :paper_size, 'A4', id: "pdf_paper_size_a4" %>
-      <%= form.label :paper_size_a4, 'A4' %>
-
-      <%= form.radio_button :paper_size, 'A3', id: "pdf_paper_size_a3" %>
-      <%= form.label :paper_size_a3, 'A3' %>
-    </div>
-
-    <div class="field">
-      <%= form.label :portrait, "Orientation" %>
-
-      <%= form.radio_button :portrait, false, id: "pdf_portrait_no" %>
-      <%= form.label :portrait_no, 'Landscape' %>
-
-      <%= form.radio_button :portrait, true, id: "pdf_portrait_yes" %>
-      <%= form.label :portrait_yes, 'Portait' %>
-
-      <div style="margin-top: 1rem;">
-        <%= form.check_box :two_sided_flipped, { id: 'pdf_two_sided_flipped', checked: @pdf.two_sided_flipped? }, '1', '0' %>
-        <%= form.label :two_sided_flipped, 'Flip even pages for two-sided printing' %>
-      </div>
-
-      <div style="margin-top: 1rem;">
-        <%= form.check_box :crop_from_marks, { id: 'pdf_crop_from_marks', checked: @pdf.crop_from_marks? }, '1', '0' %>
-        <%= form.label :crop_from_marks, 'Input PDF has crop marks (auto-crop each page)' %>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="field">
-    <%= form.label :pages_per_sheet, "Pages per sheet" %>
-
-    <%= form.radio_button :pages_per_sheet, '2', id: "pdf_pages_per_sheet_2" %>
-    <%= form.label :pages_per_sheet_2, '2' %>
-
-    <%= form.radio_button :pages_per_sheet, '3', id: "pdf_pages_per_sheet_3" %>
-    <%= form.label :pages_per_sheet_3, '3' %>
-
-    <%= form.radio_button :pages_per_sheet, '4', id: "pdf_pages_per_sheet_4" %>
-    <%= form.label :pages_per_sheet_4, '4' %>
-
-    <%= form.radio_button :pages_per_sheet, '5', id: "pdf_pages_per_sheet_5" %>
-    <%= form.label :pages_per_sheet_5, '5' %>
-
-    <%= form.radio_button :pages_per_sheet, '6', id: "pdf_pages_per_sheet_6" %>
-    <%= form.label :pages_per_sheet_6, '6' %>
-
-    <%= form.radio_button :pages_per_sheet, '7', id: "pdf_pages_per_sheet_7" %>
-    <%= form.label :pages_per_sheet_7, '7' %>
-
-    <%= form.radio_button :pages_per_sheet, '8', id: "pdf_pages_per_sheet_8" %>
-    <%= form.label :pages_per_sheet_8, '8' %>
-  </div>
-
-  <div class="field">
-    <%= form.label :autoscale, "Autoscale" %>
-
-    <%= form.radio_button :autoscale, 'none', id: "pdf_autoscale_none" %>
-    <%= form.label :autoscale_none, 'No' %>
-
-    <%= form.radio_button :autoscale, 'pdfjam', id: "pdf_autoscale_pdfjam" %>
-    <%= form.label :autoscale_pdfjam, 'Fit page' %>
-
-    <%= form.radio_button :autoscale, 'podofo', id: "pdf_autoscale_podofo" %>
-    <%= form.label :autoscale_podofo, 'Crop to content' %>
-  </div>
-
-  <div class="field margins-section">
-    <label>Margins adjustment (in mm)</label>
-
-    <%= form.radio_button :sheet_margin_mode, 'none', class: 'margin-mode-radio', data: { action: "change->margins#updateMode", margins_target: "mode" } %>
-    <%= form.label :sheet_margin_mode_none, 'None', class: 'margin-mode-label' %>
-
-    <%= form.radio_button :sheet_margin_mode, 'all', class: 'margin-mode-radio', data: { action: "change->margins#updateMode", margins_target: "mode" } %>
-    <%= form.label :sheet_margin_mode_all, 'All sides', class: 'margin-mode-label' %>
-
-    <%= form.radio_button :sheet_margin_mode, 'horizontal_vertical', checked: true, class: 'margin-mode-radio', data: { action: "change->margins#updateMode", margins_target: "mode" } %>
-    <%= form.label :sheet_margin_mode_horizontal_vertical, 'Horizontal/Vertical', class: 'margin-mode-label' %>
-
-    <%= form.radio_button :sheet_margin_mode, 'custom', class: 'margin-mode-radio', data: { action: "change->margins#updateMode", margins_target: "mode" } %>
-    <%= form.label :sheet_margin_mode_custom, 'Custom', class: 'margin-mode-label' %>
-
-    <div class="margin-inputs" data-margins-target="inputs">
-
-      <small class="help-text">
-        Use positive values to add margins, and negative values to crop.
-      </small>
-
-      <div class="margin-all" data-margins-target="all">
-        <%= form.label :sheet_margin_all, 'Margin width for all sides' %>
-        <%= form.number_field :sheet_margin_all, 
-                                step: 'any',
-                                placeholder: '0mm',
-                                class: 'margin-input',
-                                data: { target: 'all' } %>
-      </div>
-
-      <div class="margin-hv" data-margins-target="hv">
-        <div style="display: flex; gap: 2em">
-          <div>
-            <%= form.label :sheet_margin_horizontal, 'Left & right margins' %>
-            <%= form.number_field :sheet_margin_horizontal,
-                                    step: 'any',
-                                    placeholder: '0mm',
-                                    value: 0,
-                                    class: 'margin-input',
-                                    data: { target: 'horizontal' } %>
-          </div>
-          <div>
-            <%= form.label :sheet_margin_vertical, 'Top & bottom margins' %>
-            <%= form.number_field :sheet_margin_vertical,
-                                    step: 'any',
-                                    placeholder: '0mm',
-                                    value: -5,
-                                    class: 'margin-input',
-                                    data: { target: 'vertical' } %>
-          </div>
-        </div>
-      </div>
-
-      <div class="margin-custom" data-margins-target="custom">
-        <div class="margin-custom-grid">
-          <div></div>
-          <%= form.number_field :sheet_margin_top,
-                                  step: 'any',
-                                  placeholder: '0mm',
-                                  class: 'margin-input margin-top',
-                                  data: { target: 'top' } %>
-          <div></div>
-
-          <%= form.number_field :sheet_margin_left,
-                                  step: 'any',
-                                  placeholder: '0mm',
-                                  class: 'margin-input margin-left',
-                                  data: { target: 'left' } %>
-          <div></div>
-          <%= form.number_field :sheet_margin_right,
-                                  step: 'any',
-                                  placeholder: '0mm',
-                                  class: 'margin-input margin-right',
-                                  data: { target: 'right' } %>
-
-          <div></div>
-          <%= form.number_field :sheet_margin_bottom,
-                                  step: 'any',
-                                  placeholder: '0mm',
-                                  class: 'margin-input margin-bottom',
-                                  data: { target: 'bottom' } %>
-          <div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <br>
-
-  <%= form.submit "Process PDF" %>
-  <% if @pdf.persisted? %>
-  <%= link_to "Download Processed PDF", download_pdf_path(@pdf), role: "button", download: true, class: "pico-background-green-400", style: "display: block; margin-bottom: 1em;" %>
-  <%= link_to "Process another PDF", new_pdf_path, role: "button", class: "pico-background-orange-500", style: "display: block" %>
-  <% end %>
-  <% end %>
-
-  <button type="button"
-          class="help-button"
-          aria-label="Help: special cases"
-          data-action="click->help#open">?</button>
 </div>
 
-<dialog id="help-modal" data-help-target="dialog">
-  <article>
-    <header>
-      <button type="button"
-              aria-label="Close"
-              rel="prev"
-              data-action="click->help#close"></button>
-      <p><strong>Special cases</strong></p>
-    </header>
+<div class="min-h-screen flex justify-center [.has-preview_&]:justify-start p-6 lg:p-10">
+  <div class="flex gap-8 items-start w-full max-w-[760px] [.has-preview_&]:max-w-none">
+    <div class="flex flex-col gap-8 w-full [.has-preview_&]:max-w-[400px] [.has-preview_&]:h-[calc(100vh-5rem)] [.has-preview_&]:overflow-y-auto [.has-preview_&]:pr-2">
+      <header class="text-center [.has-preview_&]:text-left animate-fade-in">
+        <h1 class="m-0 text-4xl font-bold tracking-tight [.has-preview_&]:text-2xl"><%= t("app.title") %></h1>
+        <p class="mt-3 text-ink-muted text-base [.has-preview_&]:hidden">
+          <%= t("app.tagline") %>
+        </p>
+      </header>
 
-    <section>
-      <h4>Print a TibetDoc pecha in Shechen style (on A3)</h4>
-      <p>
-        Export your pecha from TibetDoc in <strong>Legal</strong> paper size,
-        with the options shown below: tick <em>Show crop marks</em>, set
-        <em>Distance between crops</em> to <strong>3.35</strong>, and leave
-        <em>Two pecha sides per print page</em> unticked.
-      </p>
-      <figure>
-        <%= image_tag "tibetdoc-shechen-config.png",
-                       alt: "TibetDoc export options for Shechen-style pecha",
-                       style: "max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 4px;" %>
-        <figcaption><small>TibetDoc export settings for Shechen-style pecha.</small></figcaption>
-      </figure>
-      <p style="margin-top: 1rem;">
-        Then click the button below to apply the matching Pecha Printer settings
-        (A3, Landscape, Autoscale: No, Margins: None, Input has crop marks):
-      </p>
-      <p>
-        <button type="button"
-                class="pico-background-green-400"
-                data-action="click->help#applyShechen">
-          Apply Shechen style
-        </button>
-      </p>
-    </section>
-  </article>
-</dialog>
+      <%= form_for @pdf, multipart: true,
+            html: { class: "flex flex-col gap-6" },
+            data: {
+              controller: "margins preset dropzone custom-panel",
+              action: "submit->margins#submitForm",
+              preset_persisted_value: @pdf.persisted?
+            } do |form| %>
+
+        <%= form.hidden_field :sheet_margins, data: { margins_target: "form" } %>
+
+        <%# Drop zone or file chip %>
+        <% if @pdf.persisted? %>
+          <div class="card flex items-center gap-3 px-4 py-3 animate-chip-in">
+            <%= lucide_icon "file-text", class: "w-5 h-5 text-accent shrink-0" %>
+            <span class="flex-1 font-semibold text-sm break-all"><%= @pdf.file.identifier %></span>
+            <%= link_to new_pdf_path,
+                  class: "w-8 h-8 inline-flex items-center justify-center rounded-md text-ink-muted hover:text-red-600 hover:bg-canvas-hover transition-colors",
+                  aria: { label: t("chip.replace_aria") } do %>
+              <%= lucide_icon "x", class: "w-4 h-4" %>
+            <% end %>
+          </div>
+        <% else %>
+          <div data-dropzone-target="dropzone" class="dropzone">
+            <%= lucide_icon "upload-cloud", class: "w-8 h-8 dropzone-icon animate-float" %>
+            <div class="text-base font-semibold mt-1"><%= t("dropzone.primary") %></div>
+            <div class="text-xs text-ink-muted"><%= t("dropzone.secondary") %></div>
+            <%= form.file_field :file,
+                  accept: "application/pdf",
+                  class: "absolute inset-0 opacity-0 cursor-pointer",
+                  data: { dropzone_target: "fileInput" } %>
+          </div>
+
+          <div class="card flex items-center gap-3 px-4 py-3 animate-chip-in"
+               data-dropzone-target="chip" hidden>
+            <%= lucide_icon "file-text", class: "w-5 h-5 text-accent shrink-0" %>
+            <span class="flex-1 font-semibold text-sm break-all" data-dropzone-target="chipName"></span>
+            <span class="text-xs text-ink-muted shrink-0" data-dropzone-target="chipSize"></span>
+            <button type="button"
+                    class="w-8 h-8 inline-flex items-center justify-center rounded-md text-ink-muted hover:text-red-600 hover:bg-canvas-hover transition-colors"
+                    data-action="click->dropzone#remove"
+                    aria-label="<%= t('chip.remove_aria') %>">
+              <%= lucide_icon "x", class: "w-4 h-4" %>
+            </button>
+          </div>
+        <% end %>
+
+        <%# Preset cards %>
+        <div class="flex flex-col gap-3">
+          <div class="text-center text-sm text-ink-muted font-medium"><%= t("presets.label") %></div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 [.has-preview_&]:sm:grid-cols-1 gap-3">
+            <% [
+              { name: "standard_a4", title: t("presets.standard_a4.title"), specs: [t("presets.specs.three_per_sheet"), t("presets.specs.fit_to_paper"), t("presets.specs.duplex")] },
+              { name: "standard_a3", title: t("presets.standard_a3.title"), specs: [t("presets.specs.three_per_sheet"), t("presets.specs.fit_to_paper"), t("presets.specs.duplex")] },
+              { name: "shechen", title: t("presets.shechen.title"), specs: [t("presets.specs.a3_three_per_sheet"), t("presets.specs.crop_marks"), t("presets.specs.duplex")], badge: t("presets.shechen.badge") }
+            ].each_with_index do |p, idx| %>
+              <div role="button"
+                   tabindex="0"
+                   class="preset animate-preset-in focus-visible:ring-2 focus-visible:ring-accent"
+                   style="animation-delay: <%= 60 * (idx + 1) %>ms;"
+                   data-preset-name="<%= p[:name] %>"
+                   data-preset-target="card"
+                   data-action="click->preset#select keydown->preset#selectKeydown">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="preset__title"><%= p[:title] %></span>
+                  <% if p[:badge] %>
+                    <span class="preset__badge"><%= p[:badge] %></span>
+                  <% end %>
+                </div>
+                <ul class="preset__specs mt-2">
+                  <% p[:specs].each do |s| %><li><%= s %></li><% end %>
+                </ul>
+                <% if p[:name] == "shechen" %>
+                  <div class="preset__hint">
+                    <div><%= t("presets.shechen.hint") %></div>
+                    <button type="button" data-action="click->preset#toggleHelp">
+                      <%= t("presets.shechen.help_link") %>
+                    </button>
+                  </div>
+                  <div class="popover" data-preset-target="popover" hidden>
+                    <h4 class="m-0 mb-2 text-sm font-semibold"><%= t("presets.shechen.popover_title") %></h4>
+                    <p class="m-0 mb-3 text-[13px] leading-snug text-ink-muted">
+                      <%= raw t("presets.shechen.popover_body_html") %>
+                    </p>
+                    <%= image_tag "tibetdoc-shechen-config.png",
+                          alt: t("presets.shechen.popover_title"),
+                          class: "w-full rounded border border-canvas-border" %>
+                  </div>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <%# Custom panel toggle %>
+        <div class="flex justify-center">
+          <button type="button"
+                  class="custom-toggle"
+                  aria-expanded="false"
+                  data-custom-panel-target="toggle"
+                  data-action="click->custom-panel#toggle">
+            <%= lucide_icon "sliders-horizontal", class: "w-4 h-4" %>
+            <span><%= t("custom.toggle") %></span>
+            <%= lucide_icon "chevron-down", class: "w-4 h-4 transition-transform duration-200", data: { custom_panel_target: "chevron" } %>
+          </button>
+        </div>
+
+        <%# Custom panel body %>
+        <div class="overflow-hidden max-h-0 transition-[max-height] duration-300 ease-out [&.is-open]:max-h-[2000px]"
+             data-custom-panel-target="panel"
+             aria-hidden="true">
+          <div class="card p-6 flex flex-col gap-6">
+
+            <section>
+              <h3 class="group-title"><%= t("custom.paper.title") %></h3>
+              <div class="flex flex-col gap-4">
+                <div>
+                  <div class="field-label"><%= t("custom.paper.size") %></div>
+                  <div class="flex flex-wrap gap-1 segmented">
+                    <%= form.radio_button :paper_size, 'A4', id: "pdf_paper_size_a4" %>
+                    <%= form.label :paper_size_a4, 'A4' %>
+                    <%= form.radio_button :paper_size, 'A3', id: "pdf_paper_size_a3" %>
+                    <%= form.label :paper_size_a3, 'A3' %>
+                  </div>
+                </div>
+                <div>
+                  <div class="field-label"><%= t("custom.paper.orientation") %></div>
+                  <div class="flex flex-wrap gap-1 segmented">
+                    <%= form.radio_button :portrait, false, id: "pdf_portrait_no" %>
+                    <%= form.label :portrait_no, t("custom.paper.landscape") %>
+                    <%= form.radio_button :portrait, true, id: "pdf_portrait_yes" %>
+                    <%= form.label :portrait_yes, t("custom.paper.portrait") %>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <h3 class="group-title"><%= t("custom.layout.title") %></h3>
+              <div class="flex flex-col gap-4">
+                <div>
+                  <div class="field-label"><%= t("custom.layout.pages_per_sheet") %></div>
+                  <div class="flex flex-wrap gap-1 segmented">
+                    <% %w[2 3 4 5 6 7 8].each do |n| %>
+                      <%= form.radio_button :pages_per_sheet, n, id: "pdf_pages_per_sheet_#{n}" %>
+                      <%= form.label "pages_per_sheet_#{n}".to_sym, n %>
+                    <% end %>
+                  </div>
+                </div>
+                <div>
+                  <div class="field-label"><%= t("custom.layout.autoscale") %></div>
+                  <div class="flex flex-wrap gap-1 segmented">
+                    <%= form.radio_button :autoscale, 'none', id: "pdf_autoscale_none" %>
+                    <%= form.label :autoscale_none, t("custom.layout.autoscale_none") %>
+                    <%= form.radio_button :autoscale, 'pdfjam', id: "pdf_autoscale_pdfjam" %>
+                    <%= form.label :autoscale_pdfjam, t("custom.layout.autoscale_fit") %>
+                    <%= form.radio_button :autoscale, 'podofo', id: "pdf_autoscale_podofo" %>
+                    <%= form.label :autoscale_podofo, t("custom.layout.autoscale_crop") %>
+                  </div>
+                </div>
+                <label class="inline-flex items-center gap-2 text-sm cursor-pointer text-ink">
+                  <%= form.check_box :two_sided_flipped, { id: 'pdf_two_sided_flipped', class: 'w-[18px] h-[18px] accent-accent' }, '1', '0' %>
+                  <span><%= t("custom.layout.flip_label") %></span>
+                </label>
+                <label class="inline-flex items-center gap-2 text-sm cursor-pointer text-ink">
+                  <%= form.check_box :crop_from_marks, { id: 'pdf_crop_from_marks', class: 'w-[18px] h-[18px] accent-accent' }, '1', '0' %>
+                  <span><%= t("custom.layout.crop_marks_label") %></span>
+                </label>
+              </div>
+            </section>
+
+            <section class="margins-section">
+              <h3 class="group-title"><%= t("custom.margins.title") %></h3>
+              <div class="flex flex-wrap gap-1 mb-3 segmented">
+                <%= form.radio_button :sheet_margin_mode, 'none', class: 'margin-mode-radio', id: 'pdf_sheet_margin_mode_none', data: { action: "change->margins#updateMode", margins_target: "mode" } %>
+                <%= form.label :sheet_margin_mode_none, t("custom.margins.none") %>
+                <%= form.radio_button :sheet_margin_mode, 'all', class: 'margin-mode-radio', id: 'pdf_sheet_margin_mode_all', data: { action: "change->margins#updateMode", margins_target: "mode" } %>
+                <%= form.label :sheet_margin_mode_all, t("custom.margins.all") %>
+                <%= form.radio_button :sheet_margin_mode, 'horizontal_vertical', checked: true, class: 'margin-mode-radio', id: 'pdf_sheet_margin_mode_horizontal_vertical', data: { action: "change->margins#updateMode", margins_target: "mode" } %>
+                <%= form.label :sheet_margin_mode_horizontal_vertical, t("custom.margins.hv") %>
+                <%= form.radio_button :sheet_margin_mode, 'custom', class: 'margin-mode-radio', id: 'pdf_sheet_margin_mode_custom', data: { action: "change->margins#updateMode", margins_target: "mode" } %>
+                <%= form.label :sheet_margin_mode_custom, t("custom.margins.custom") %>
+              </div>
+
+              <div class="mt-2" data-margins-target="inputs">
+                <small class="block text-center text-xs text-ink-muted mb-3"><%= t("custom.margins.help") %></small>
+                <div data-margins-target="all">
+                  <label for="pdf_sheet_margin_all" class="field-label"><%= t("custom.margins.all_label") %></label>
+                  <%= form.number_field :sheet_margin_all, step: 'any', placeholder: '0mm', class: 'margin-input', data: { target: 'all' } %>
+                </div>
+                <div data-margins-target="hv">
+                  <div class="flex gap-6 justify-center">
+                    <div>
+                      <label for="pdf_sheet_margin_horizontal" class="field-label"><%= t("custom.margins.lr") %></label>
+                      <%= form.number_field :sheet_margin_horizontal, step: 'any', placeholder: '0mm', value: 0, class: 'margin-input', data: { target: 'horizontal' } %>
+                    </div>
+                    <div>
+                      <label for="pdf_sheet_margin_vertical" class="field-label"><%= t("custom.margins.tb") %></label>
+                      <%= form.number_field :sheet_margin_vertical, step: 'any', placeholder: '0mm', value: -5, class: 'margin-input', data: { target: 'vertical' } %>
+                    </div>
+                  </div>
+                </div>
+                <div data-margins-target="custom">
+                  <div class="margin-custom-grid">
+                    <div></div>
+                    <%= form.number_field :sheet_margin_top, step: 'any', placeholder: '0mm', class: 'margin-input', data: { target: 'top' } %>
+                    <div></div>
+                    <%= form.number_field :sheet_margin_left, step: 'any', placeholder: '0mm', class: 'margin-input', data: { target: 'left' } %>
+                    <div></div>
+                    <%= form.number_field :sheet_margin_right, step: 'any', placeholder: '0mm', class: 'margin-input', data: { target: 'right' } %>
+                    <div></div>
+                    <%= form.number_field :sheet_margin_bottom, step: 'any', placeholder: '0mm', class: 'margin-input', data: { target: 'bottom' } %>
+                    <div></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+          </div>
+        </div>
+
+        <%# CTA %>
+        <% if @pdf.persisted? %>
+          <div class="flex flex-col gap-3 animate-cta-in mt-2">
+            <%= link_to download_pdf_path(@pdf), download: true, class: "btn-success" do %>
+              <%= lucide_icon "download", class: "w-5 h-5" %>
+              <%= t("cta.download") %>
+            <% end %>
+            <%= form.submit "↻ #{t('cta.regenerate')}", class: "btn-ghost" %>
+          </div>
+        <% else %>
+          <div class="flex flex-col gap-3 animate-cta-in mt-2">
+            <button type="submit" class="btn-primary">
+              <%= lucide_icon "sparkles", class: "w-5 h-5" %>
+              <%= t("cta.generate") %>
+            </button>
+          </div>
+        <% end %>
+
+      <% end %>
+    </div>
+
+    <% if @pdf.persisted? %>
+      <div class="flex-1 min-w-0 h-[calc(100vh-5rem)] min-h-[600px] rounded-[5px] border border-canvas-border bg-canvas-surface shadow-card overflow-hidden animate-preview-in">
+        <embed src="<%= download_pdf_path(@pdf) %>#toolbar=0"
+               type="application/pdf"
+               class="block w-full h-full border-0" />
+      </div>
+    <% end %>
+  </div>
+</div>
 
 <% if @pdf.persisted? %>
-<div id="preview">
-  <embed src="<%= download_pdf_path(@pdf) %>#toolbar=0" type="application/pdf" width="100%" height="100%" />
-</div>
-<% else %>
-<div id="welcome">
-  <%= image_tag("printing-press.svg") %>
-</div>
+  <script>document.body.classList.add("has-preview");</script>
 <% end %>

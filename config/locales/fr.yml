@@ -1,0 +1,64 @@
+fr:
+  app:
+    title: "Pecha Printer"
+    tagline: "Génère un PDF prêt à imprimer en mode pecha à découper et à empiler."
+  dropzone:
+    primary: "Glisse un PDF ici"
+    secondary: "ou clique pour parcourir"
+  chip:
+    replace_aria: "Choisir un autre fichier"
+    remove_aria: "Retirer le fichier"
+  presets:
+    label: "Choisis un style"
+    standard_a4:
+      title: "Standard A4"
+    standard_a3:
+      title: "Standard A3"
+    shechen:
+      title: "Shechen"
+      badge: "TibetDoc"
+      hint: "Pour PDF exporté depuis TibetDoc"
+      help_link: "Voir la config d'export →"
+      popover_title: "Export TibetDoc pour Shechen"
+      popover_body_html: "Dans TibetDoc, exporte ton pecha en <strong>Legal</strong>, coche <strong>Show crop marks</strong>, mets <strong>Distance between crops</strong> à <strong>3.35</strong>, et laisse <strong>Two pecha sides per print page</strong> décoché."
+    specs:
+      three_per_sheet: "3 pages par feuille"
+      fit_to_paper: "Ajustement au papier"
+      duplex: "Recto-verso"
+      a3_three_per_sheet: "A3 · 3 pages par feuille"
+      crop_marks: "Détection des marques de coupe"
+  custom:
+    toggle: "Options personnalisées"
+    paper:
+      title: "Papier"
+      size: "Taille"
+      orientation: "Orientation"
+      landscape: "Paysage"
+      portrait: "Portrait"
+    layout:
+      title: "Mise en page"
+      pages_per_sheet: "Pages par feuille"
+      autoscale: "Autoscale"
+      autoscale_none: "Aucun"
+      autoscale_fit: "Ajuste au papier"
+      autoscale_crop: "Recadre sur contenu"
+      flip_label: "Retourner les pages paires (impression recto-verso)"
+      crop_marks_label: "Le PDF contient des marques de coupe (auto-recadrage)"
+    margins:
+      title: "Marges (mm)"
+      none: "Aucune"
+      all: "Toutes"
+      hv: "Horizontal/Vertical"
+      custom: "Personnalisées"
+      help: "Positif = ajoute des marges. Négatif = recadre."
+      all_label: "Marge sur les 4 côtés"
+      lr: "Gauche & droite"
+      tb: "Haut & bas"
+  cta:
+    generate: "Générer le PDF"
+    download: "Télécharger le PDF"
+    regenerate: "Re-générer avec ces options"
+  theme:
+    toggle_aria: "Basculer le thème"
+  locale:
+    switch_aria: "Changer la langue"
