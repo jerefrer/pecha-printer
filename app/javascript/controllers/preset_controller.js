@@ -42,11 +42,17 @@ export default class extends Controller {
 
   connect() {
     this.form = this.element.closest("form");
-    this.apply(this.currentValue);
+    if (!this.form) return;
     this.boundFormChange = (e) => this.onFormChange(e);
     this.boundDocumentClick = (e) => this.closeHelpOutside(e);
     this.form.addEventListener("change", this.boundFormChange);
     document.addEventListener("click", this.boundDocumentClick);
+    // Detect which preset the current form state matches (if any) instead of
+    // unconditionally applying the default — otherwise we'd overwrite the
+    // persisted Shechen settings in State C with standard_a4 values.
+    const matched = this.detectMatchingPreset();
+    this.currentValue = matched || "";
+    this.refreshCardStyles();
   }
 
   disconnect() {
@@ -145,6 +151,16 @@ export default class extends Controller {
       marginMode === preset.sheet_margin_mode &&
       margins === preset.sheet_margins
     );
+  }
+
+  detectMatchingPreset() {
+    return Object.keys(PRESETS).find((name) => {
+      const original = this.currentValue;
+      this.currentValue = name;
+      const ok = this.matchesCurrent();
+      this.currentValue = original;
+      return ok;
+    });
   }
 
   toggleHelp(event) {
