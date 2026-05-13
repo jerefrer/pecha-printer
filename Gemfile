@@ -54,9 +54,6 @@ group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
 
-  # Highlight the fine-grained location where an error occurred [https://github.com/ruby/error_highlight]
-  gem "error_highlight", ">= 0.4.0", platforms: [ :ruby ]
-
   gem "capistrano", "~> 3.19"
   gem "capistrano-rails", "~> 1.6"
   gem "capistrano-rails-console", require: false
