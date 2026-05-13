@@ -18,7 +18,41 @@
         <%= form.hidden_field :sheet_margins, data: { margins_target: "form" } %>
 
         <%# Drop zone — Task 3 %>
-        <div data-component="dropzone-placeholder" class="card p-8 text-center text-ink-muted">[drop zone placeholder]</div>
+        <% if @pdf.persisted? %>
+          <div class="card flex items-center gap-3 px-4 py-3 animate-chip-in">
+            <%= lucide_icon "file-text", class: "w-5 h-5 text-accent shrink-0" %>
+            <span class="flex-1 font-semibold break-all"><%= @pdf.file.filename %></span>
+            <%= link_to new_pdf_path,
+                  class: "w-8 h-8 inline-flex items-center justify-center rounded text-ink-muted hover:text-red-600 hover:bg-canvas-hover transition-colors",
+                  aria: { label: "Choisir un autre fichier" } do %>
+              <%= lucide_icon "x", class: "w-4 h-4" %>
+            <% end %>
+          </div>
+        <% else %>
+          <div data-dropzone-target="dropzone"
+               class="card relative flex flex-col items-center justify-center gap-3 p-10 cursor-pointer border-2 border-dashed border-canvas-border-strong hover:border-accent transition-colors duration-200 [&.is-dragover]:border-accent [&.is-dragover]:bg-accent-soft [&.is-dragover]:scale-[1.01]">
+            <%= lucide_icon "upload-cloud", class: "w-12 h-12 text-ink-muted animate-float" %>
+            <div class="text-lg font-semibold">Glisse un PDF ici</div>
+            <div class="text-sm text-ink-muted">ou clique pour parcourir</div>
+            <%= form.file_field :file,
+                  accept: "application/pdf",
+                  class: "absolute inset-0 opacity-0 cursor-pointer",
+                  data: { dropzone_target: "fileInput" } %>
+          </div>
+
+          <div class="card flex items-center gap-3 px-4 py-3 animate-chip-in"
+               data-dropzone-target="chip" hidden>
+            <%= lucide_icon "file-text", class: "w-5 h-5 text-accent shrink-0" %>
+            <span class="flex-1 font-semibold break-all" data-dropzone-target="chipName"></span>
+            <span class="text-sm text-ink-muted shrink-0" data-dropzone-target="chipSize"></span>
+            <button type="button"
+                    class="w-8 h-8 inline-flex items-center justify-center rounded text-ink-muted hover:text-red-600 hover:bg-canvas-hover transition-colors"
+                    data-action="click->dropzone#remove"
+                    aria-label="Retirer le fichier">
+              <%= lucide_icon "x", class: "w-4 h-4" %>
+            </button>
+          </div>
+        <% end %>
 
         <%# Preset cards — Task 4 %>
         <div data-component="presets-placeholder" class="card p-8 text-center text-ink-muted">[preset cards placeholder]</div>
