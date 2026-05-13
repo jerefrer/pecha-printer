@@ -1,251 +1,49 @@
-<div id="form-container">
-  <h1>Pecha Printer</h1>
+<div class="min-h-screen flex justify-center [.has-preview_&]:justify-start p-6 lg:p-10">
+  <div class="flex gap-8 items-start w-full max-w-[760px] [.has-preview_&]:max-w-none">
+    <div class="flex flex-col gap-8 w-full [.has-preview_&]:max-w-[380px]">
+      <header class="text-center [.has-preview_&]:text-left">
+        <h1 class="m-0 text-3xl font-bold tracking-tight [.has-preview_&]:text-xl">Pecha Printer</h1>
+        <p class="mt-2 text-ink-muted [.has-preview_&]:hidden">
+          Imprime un PDF en mode pecha à découper et à empiler.
+        </p>
+      </header>
 
-  <!--
-  <% flash.each do |type, msg| %>
-    <div class="alert alert-<%= type == 'notice' ? 'success' : 'danger' %>">
-      <%= msg %>
-    </div>
-  <% end %>
--->
+      <%= form_for @pdf, multipart: true,
+            html: { class: "flex flex-col gap-6" },
+            data: {
+              controller: "margins preset dropzone custom-panel",
+              action: "submit->margins#submitForm"
+            } do |form| %>
 
-  <%= form_for @pdf, multipart: true, 
-    data: { 
-      controller: "margins",
-      action: "submit->margins#submitForm",
-      margins_target: "form"
-    } do |form|
-  %>
+        <%= form.hidden_field :sheet_margins, data: { margins_target: "form" } %>
 
-  <%= form.hidden_field :sheet_margins %>
+        <%# Drop zone — Task 3 %>
+        <div data-component="dropzone-placeholder" class="card p-8 text-center text-ink-muted">[drop zone placeholder]</div>
 
-  <% if @pdf.persisted? %>
-  <h2><%= @pdf.file.filename %></h2>
-  <% else %>
-  <div>
-    <%= form.file_field :file %>
-  </div>
-  <% end %>
+        <%# Preset cards — Task 4 %>
+        <div data-component="presets-placeholder" class="card p-8 text-center text-ink-muted">[preset cards placeholder]</div>
 
-  <div style="display: flex; gap: 4em;">
+        <%# Custom panel — Task 5 %>
+        <div data-component="custom-placeholder" class="text-center text-ink-muted text-sm">[custom panel placeholder]</div>
 
-    <div class="field">
-      <%= form.label :paper_size, "Paper size" %>
+        <%# CTA — Task 6 %>
+        <div data-component="cta-placeholder" class="card p-4 text-center text-ink-muted">[CTA placeholder]</div>
 
-      <%= form.radio_button :paper_size, 'A4', id: "pdf_paper_size_a4" %>
-      <%= form.label :paper_size_a4, 'A4' %>
-
-      <%= form.radio_button :paper_size, 'A3', id: "pdf_paper_size_a3" %>
-      <%= form.label :paper_size_a3, 'A3' %>
+      <% end %>
     </div>
 
-    <div class="field">
-      <%= form.label :portrait, "Orientation" %>
-
-      <%= form.radio_button :portrait, false, id: "pdf_portrait_no" %>
-      <%= form.label :portrait_no, 'Landscape' %>
-
-      <%= form.radio_button :portrait, true, id: "pdf_portrait_yes" %>
-      <%= form.label :portrait_yes, 'Portait' %>
-
-      <div style="margin-top: 1rem;">
-        <%= form.check_box :two_sided_flipped, { id: 'pdf_two_sided_flipped', checked: @pdf.two_sided_flipped? }, '1', '0' %>
-        <%= form.label :two_sided_flipped, 'Flip even pages for two-sided printing' %>
+    <% if @pdf.persisted? %>
+      <div class="flex-1 min-w-0 h-[calc(100vh-5rem)] min-h-[600px] rounded-lg border border-canvas-border bg-canvas-surface shadow-card overflow-hidden animate-preview-in">
+        <embed src="<%= download_pdf_path(@pdf) %>#toolbar=0"
+               type="application/pdf"
+               class="block w-full h-full border-0" />
       </div>
-
-      <div style="margin-top: 1rem;">
-        <%= form.check_box :crop_from_marks, { id: 'pdf_crop_from_marks', checked: @pdf.crop_from_marks? }, '1', '0' %>
-        <%= form.label :crop_from_marks, 'Input PDF has crop marks (auto-crop each page)' %>
-      </div>
-    </div>
-
+    <% end %>
   </div>
-
-  <div class="field">
-    <%= form.label :pages_per_sheet, "Pages per sheet" %>
-
-    <%= form.radio_button :pages_per_sheet, '2', id: "pdf_pages_per_sheet_2" %>
-    <%= form.label :pages_per_sheet_2, '2' %>
-
-    <%= form.radio_button :pages_per_sheet, '3', id: "pdf_pages_per_sheet_3" %>
-    <%= form.label :pages_per_sheet_3, '3' %>
-
-    <%= form.radio_button :pages_per_sheet, '4', id: "pdf_pages_per_sheet_4" %>
-    <%= form.label :pages_per_sheet_4, '4' %>
-
-    <%= form.radio_button :pages_per_sheet, '5', id: "pdf_pages_per_sheet_5" %>
-    <%= form.label :pages_per_sheet_5, '5' %>
-
-    <%= form.radio_button :pages_per_sheet, '6', id: "pdf_pages_per_sheet_6" %>
-    <%= form.label :pages_per_sheet_6, '6' %>
-
-    <%= form.radio_button :pages_per_sheet, '7', id: "pdf_pages_per_sheet_7" %>
-    <%= form.label :pages_per_sheet_7, '7' %>
-
-    <%= form.radio_button :pages_per_sheet, '8', id: "pdf_pages_per_sheet_8" %>
-    <%= form.label :pages_per_sheet_8, '8' %>
-  </div>
-
-  <div class="field">
-    <%= form.label :autoscale, "Autoscale" %>
-
-    <%= form.radio_button :autoscale, 'none', id: "pdf_autoscale_none" %>
-    <%= form.label :autoscale_none, 'No' %>
-
-    <%= form.radio_button :autoscale, 'pdfjam', id: "pdf_autoscale_pdfjam" %>
-    <%= form.label :autoscale_pdfjam, 'Fit page' %>
-
-    <%= form.radio_button :autoscale, 'podofo', id: "pdf_autoscale_podofo" %>
-    <%= form.label :autoscale_podofo, 'Crop to content' %>
-  </div>
-
-  <div class="field margins-section">
-    <label>Margins adjustment (in mm)</label>
-
-    <%= form.radio_button :sheet_margin_mode, 'none', class: 'margin-mode-radio', data: { action: "change->margins#updateMode", margins_target: "mode" } %>
-    <%= form.label :sheet_margin_mode_none, 'None', class: 'margin-mode-label' %>
-
-    <%= form.radio_button :sheet_margin_mode, 'all', class: 'margin-mode-radio', data: { action: "change->margins#updateMode", margins_target: "mode" } %>
-    <%= form.label :sheet_margin_mode_all, 'All sides', class: 'margin-mode-label' %>
-
-    <%= form.radio_button :sheet_margin_mode, 'horizontal_vertical', checked: true, class: 'margin-mode-radio', data: { action: "change->margins#updateMode", margins_target: "mode" } %>
-    <%= form.label :sheet_margin_mode_horizontal_vertical, 'Horizontal/Vertical', class: 'margin-mode-label' %>
-
-    <%= form.radio_button :sheet_margin_mode, 'custom', class: 'margin-mode-radio', data: { action: "change->margins#updateMode", margins_target: "mode" } %>
-    <%= form.label :sheet_margin_mode_custom, 'Custom', class: 'margin-mode-label' %>
-
-    <div class="margin-inputs" data-margins-target="inputs">
-
-      <small class="help-text">
-        Use positive values to add margins, and negative values to crop.
-      </small>
-
-      <div class="margin-all" data-margins-target="all">
-        <%= form.label :sheet_margin_all, 'Margin width for all sides' %>
-        <%= form.number_field :sheet_margin_all, 
-                                step: 'any',
-                                placeholder: '0mm',
-                                class: 'margin-input',
-                                data: { target: 'all' } %>
-      </div>
-
-      <div class="margin-hv" data-margins-target="hv">
-        <div style="display: flex; gap: 2em">
-          <div>
-            <%= form.label :sheet_margin_horizontal, 'Left & right margins' %>
-            <%= form.number_field :sheet_margin_horizontal,
-                                    step: 'any',
-                                    placeholder: '0mm',
-                                    value: 0,
-                                    class: 'margin-input',
-                                    data: { target: 'horizontal' } %>
-          </div>
-          <div>
-            <%= form.label :sheet_margin_vertical, 'Top & bottom margins' %>
-            <%= form.number_field :sheet_margin_vertical,
-                                    step: 'any',
-                                    placeholder: '0mm',
-                                    value: -5,
-                                    class: 'margin-input',
-                                    data: { target: 'vertical' } %>
-          </div>
-        </div>
-      </div>
-
-      <div class="margin-custom" data-margins-target="custom">
-        <div class="margin-custom-grid">
-          <div></div>
-          <%= form.number_field :sheet_margin_top,
-                                  step: 'any',
-                                  placeholder: '0mm',
-                                  class: 'margin-input margin-top',
-                                  data: { target: 'top' } %>
-          <div></div>
-
-          <%= form.number_field :sheet_margin_left,
-                                  step: 'any',
-                                  placeholder: '0mm',
-                                  class: 'margin-input margin-left',
-                                  data: { target: 'left' } %>
-          <div></div>
-          <%= form.number_field :sheet_margin_right,
-                                  step: 'any',
-                                  placeholder: '0mm',
-                                  class: 'margin-input margin-right',
-                                  data: { target: 'right' } %>
-
-          <div></div>
-          <%= form.number_field :sheet_margin_bottom,
-                                  step: 'any',
-                                  placeholder: '0mm',
-                                  class: 'margin-input margin-bottom',
-                                  data: { target: 'bottom' } %>
-          <div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <br>
-
-  <%= form.submit "Process PDF" %>
-  <% if @pdf.persisted? %>
-  <%= link_to "Download Processed PDF", download_pdf_path(@pdf), role: "button", download: true, class: "pico-background-green-400", style: "display: block; margin-bottom: 1em;" %>
-  <%= link_to "Process another PDF", new_pdf_path, role: "button", class: "pico-background-orange-500", style: "display: block" %>
-  <% end %>
-  <% end %>
-
-  <button type="button"
-          class="help-button"
-          aria-label="Help: special cases"
-          data-action="click->help#open">?</button>
 </div>
 
-<dialog id="help-modal" data-help-target="dialog">
-  <article>
-    <header>
-      <button type="button"
-              aria-label="Close"
-              rel="prev"
-              data-action="click->help#close"></button>
-      <p><strong>Special cases</strong></p>
-    </header>
-
-    <section>
-      <h4>Print a TibetDoc pecha in Shechen style (on A3)</h4>
-      <p>
-        Export your pecha from TibetDoc in <strong>Legal</strong> paper size,
-        with the options shown below: tick <em>Show crop marks</em>, set
-        <em>Distance between crops</em> to <strong>3.35</strong>, and leave
-        <em>Two pecha sides per print page</em> unticked.
-      </p>
-      <figure>
-        <%= image_tag "tibetdoc-shechen-config.png",
-                       alt: "TibetDoc export options for Shechen-style pecha",
-                       style: "max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 4px;" %>
-        <figcaption><small>TibetDoc export settings for Shechen-style pecha.</small></figcaption>
-      </figure>
-      <p style="margin-top: 1rem;">
-        Then click the button below to apply the matching Pecha Printer settings
-        (A3, Landscape, Autoscale: No, Margins: None, Input has crop marks):
-      </p>
-      <p>
-        <button type="button"
-                class="pico-background-green-400"
-                data-action="click->help#applyShechen">
-          Apply Shechen style
-        </button>
-      </p>
-    </section>
-  </article>
-</dialog>
-
+<%# When a preview exists, signal it to the outer container via a body class
+    so the [.has-preview_&]:* utilities in the layout activate. %>
 <% if @pdf.persisted? %>
-<div id="preview">
-  <embed src="<%= download_pdf_path(@pdf) %>#toolbar=0" type="application/pdf" width="100%" height="100%" />
-</div>
-<% else %>
-<div id="welcome">
-  <%= image_tag("printing-press.svg") %>
-</div>
+  <script>document.body.classList.add("has-preview");</script>
 <% end %>
