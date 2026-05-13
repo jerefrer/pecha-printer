@@ -9,19 +9,22 @@ export default class extends Controller {
   connect() {
     if (!this.hasFileInputTarget) return;
     this.fileInputTarget.addEventListener("change", () => this.renderForState());
-    this.element.addEventListener("dragover", (e) => this.dragOver(e));
-    this.element.addEventListener("dragleave", (e) => this.dragLeave(e));
-    this.element.addEventListener("drop", (e) => this.drop(e));
+    if (this.hasDropzoneTarget) {
+      this.dropzoneTarget.addEventListener("dragover", (e) => this.dragOver(e));
+      this.dropzoneTarget.addEventListener("dragleave", (e) => this.dragLeave(e));
+      this.dropzoneTarget.addEventListener("drop", (e) => this.drop(e));
+    }
     this.renderForState();
   }
 
   dragOver(event) {
     event.preventDefault();
-    if (this.hasDropzoneTarget) this.dropzoneTarget.classList.add("is-dragover");
+    this.dropzoneTarget.classList.add("is-dragover");
   }
 
   dragLeave(event) {
-    if (event.target === this.dropzoneTarget) {
+    if (!this.hasDropzoneTarget) return;
+    if (!this.dropzoneTarget.contains(event.relatedTarget)) {
       this.dropzoneTarget.classList.remove("is-dragover");
     }
   }
