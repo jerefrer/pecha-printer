@@ -62,12 +62,13 @@
             { name: "standard_a3", title: "Standard A3", specs: ["3 pages par feuille", "Ajuste au papier", "Recto-verso"] },
             { name: "shechen", title: "Shechen TibetDoc", specs: ["3 pages par feuille", "Marques de coupe", "Recto-verso, A3"] }
           ].each_with_index do |p, idx| %>
-            <button type="button"
-                    class="preset card relative flex flex-col gap-2 p-5 text-left cursor-pointer transition-all duration-150 hover:-translate-y-px hover:shadow-card hover:border-canvas-border-strong [&.is-selected]:border-accent [&.is-selected]:bg-accent-soft [&.is-selected]:ring-2 [&.is-selected]:ring-accent-ring animate-preset-in"
-                    style="animation-delay: <%= 50 * (idx + 1) %>ms;"
-                    data-preset-name="<%= p[:name] %>"
-                    data-preset-target="card"
-                    data-action="click->preset#select">
+            <div role="button"
+                     tabindex="0"
+                     class="preset card relative flex flex-col gap-2 p-5 text-left cursor-pointer transition-all duration-150 hover:-translate-y-px hover:shadow-card hover:border-canvas-border-strong [&.is-selected]:border-accent [&.is-selected]:bg-accent-soft [&.is-selected]:ring-2 [&.is-selected]:ring-accent-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent animate-preset-in"
+                     style="animation-delay: <%= 50 * (idx + 1) %>ms;"
+                     data-preset-name="<%= p[:name] %>"
+                     data-preset-target="card"
+                     data-action="click->preset#select keydown->preset#selectKeydown">
               <span class="text-base font-bold"><%= p[:title] %></span>
               <ul class="m-0 p-0 list-none text-sm text-ink-muted flex flex-col gap-0.5">
                 <% p[:specs].each do |s| %><li><%= s %></li><% end %>
@@ -90,7 +91,7 @@
                         class: "w-full rounded border border-canvas-border" %>
                 </div>
               <% end %>
-            </button>
+            </div>
           <% end %>
         </div>
 

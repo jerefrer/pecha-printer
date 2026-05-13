@@ -61,6 +61,13 @@ export default class extends Controller {
     this.apply(name);
   }
 
+  selectKeydown(event) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      this.select(event);
+    }
+  }
+
   apply(name) {
     const preset = PRESETS[name];
     if (!preset) return;
@@ -126,13 +133,17 @@ export default class extends Controller {
     const auto = this.form.querySelector('input[name="pdf[autoscale]"]:checked')?.value;
     const flip = this.form.querySelector('input[name="pdf[two_sided_flipped]"]')?.checked ? "1" : "0";
     const crop = this.form.querySelector('input[name="pdf[crop_from_marks]"]')?.checked ? "1" : "0";
+    const marginMode = this.form.querySelector('.margins-section input[type="radio"]:checked')?.value;
+    const margins = this.form.querySelector('input[name="pdf[sheet_margins]"]')?.value;
     return (
       paper === preset.paper_size &&
       portrait === preset.portrait &&
       pps === preset.pages_per_sheet &&
       auto === preset.autoscale &&
       flip === preset.two_sided_flipped &&
-      crop === preset.crop_from_marks
+      crop === preset.crop_from_marks &&
+      marginMode === preset.sheet_margin_mode &&
+      margins === preset.sheet_margins
     );
   }
 
