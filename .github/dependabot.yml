@@ -1,12 +1,42 @@
+# Dependabot configuration.
+#
+# Strategy: weekly, grouped. Aim is to get at most a couple of PRs per week
+# instead of a flood. Patch updates are auto-merged via the workflow in
+# .github/workflows/dependabot-auto-merge.yml — minor and major bumps still
+# require a human look (auto-merge skips them).
+#
+# Security advisories from GitHub remain enabled and out-of-band: those
+# always open a PR regardless of this file's schedule.
+
 version: 2
 updates:
-- package-ecosystem: bundler
-  directory: "/"
-  schedule:
-    interval: daily
-  open-pull-requests-limit: 10
-- package-ecosystem: github-actions
-  directory: "/"
-  schedule:
-    interval: daily
-  open-pull-requests-limit: 10
+  - package-ecosystem: bundler
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      production-patches:
+        dependency-type: production
+        update-types: [patch]
+      production-minors:
+        dependency-type: production
+        update-types: [minor]
+      development:
+        dependency-type: development
+        update-types: [minor, patch]
+    labels:
+      - dependencies
+      - bundler
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]
+    labels:
+      - dependencies
+      - github-actions
