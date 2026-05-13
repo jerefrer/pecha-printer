@@ -15,11 +15,11 @@
 
 <div class="min-h-screen flex justify-center [.has-preview_&]:justify-start p-6 lg:p-10">
   <div class="flex gap-8 items-start w-full max-w-[760px] [.has-preview_&]:max-w-none">
-    <div class="flex flex-col gap-8 w-full [.has-preview_&]:max-w-[400px]">
+    <div class="flex flex-col gap-8 w-full [.has-preview_&]:max-w-[400px] [.has-preview_&]:h-[calc(100vh-5rem)] [.has-preview_&]:overflow-y-auto [.has-preview_&]:pr-2">
       <header class="text-center [.has-preview_&]:text-left animate-fade-in">
         <h1 class="m-0 text-4xl font-bold tracking-tight [.has-preview_&]:text-2xl">Pecha Printer</h1>
         <p class="mt-3 text-ink-muted text-base [.has-preview_&]:hidden">
-          Imprime un PDF en mode pecha à découper et à empiler.
+          Génère un PDF prêt à imprimer en mode pecha à découper et à empiler.
         </p>
       </header>
 
@@ -37,7 +37,7 @@
         <% if @pdf.persisted? %>
           <div class="card flex items-center gap-3 px-4 py-3 animate-chip-in">
             <%= lucide_icon "file-text", class: "w-5 h-5 text-accent shrink-0" %>
-            <span class="flex-1 font-semibold text-sm break-all"><%= @pdf.file.filename %></span>
+            <span class="flex-1 font-semibold text-sm break-all"><%= @pdf.file.identifier %></span>
             <%= link_to new_pdf_path,
                   class: "w-8 h-8 inline-flex items-center justify-center rounded-md text-ink-muted hover:text-red-600 hover:bg-canvas-hover transition-colors",
                   aria: { label: "Choisir un autre fichier" } do %>
@@ -72,7 +72,7 @@
         <%# Preset cards %>
         <div class="flex flex-col gap-3">
           <div class="text-center text-sm text-ink-muted font-medium">Choisis un style</div>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="grid grid-cols-1 sm:grid-cols-3 [.has-preview_&]:sm:grid-cols-1 gap-3">
             <% [
               { name: "standard_a4", title: "Standard A4", specs: ["3 pages par feuille", "Ajustement au papier", "Recto-verso"] },
               { name: "standard_a3", title: "Standard A3", specs: ["3 pages par feuille", "Ajustement au papier", "Recto-verso"] },
@@ -254,13 +254,13 @@
               <%= lucide_icon "download", class: "w-5 h-5" %>
               Télécharger le PDF
             <% end %>
-            <%= form.submit "↻ Re-traiter avec ces options", class: "btn-ghost" %>
+            <%= form.submit "↻ Re-générer avec ces options", class: "btn-ghost" %>
           </div>
         <% else %>
           <div class="flex flex-col gap-3 animate-cta-in mt-2">
             <button type="submit" class="btn-primary">
-              <%= lucide_icon "printer", class: "w-5 h-5" %>
-              Imprimer le PDF
+              <%= lucide_icon "sparkles", class: "w-5 h-5" %>
+              Générer le PDF
             </button>
           </div>
         <% end %>
