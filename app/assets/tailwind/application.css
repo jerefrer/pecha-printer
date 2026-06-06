@@ -447,4 +447,47 @@
     color: var(--color-ink-muted);
     margin-bottom: 0.5rem;
   }
+
+  /* Flash messages — opaque banners rendered below the form CTA */
+  .flash-stack {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .flash-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    border-radius: var(--radius-lg);
+    background-color: var(--color-canvas-surface);
+    border: 1px solid var(--color-canvas-border);
+    border-left-width: 4px;
+    box-shadow: var(--shadow-elevated);
+    color: var(--color-ink);
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
+  .flash-banner__icon { flex-shrink: 0; margin-top: 1px; }
+  .flash-banner__message { flex: 1; font-weight: 500; word-break: break-word; }
+  .flash-banner__close {
+    flex-shrink: 0;
+    appearance: none;
+    background: transparent;
+    border: 0;
+    padding: 2px;
+    cursor: pointer;
+    color: var(--color-ink-subtle);
+    transition: color 150ms;
+  }
+  .flash-banner__close:hover { color: var(--color-ink); }
+  .flash-banner--alert { border-left-color: #dc2626; }
+  .flash-banner--alert .flash-banner__icon { color: #dc2626; }
+  .flash-banner--notice { border-left-color: var(--color-success); }
+  .flash-banner--notice .flash-banner__icon { color: var(--color-success); }
+  html.dark .flash-banner--alert { border-left-color: #f87171; }
+  html.dark .flash-banner--alert .flash-banner__icon { color: #f87171; }
+  html.dark .flash-banner--notice { border-left-color: #4ade80; }
+  html.dark .flash-banner--notice .flash-banner__icon { color: #4ade80; }
 }

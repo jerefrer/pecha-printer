@@ -1,0 +1,22 @@
+<% if flash.any? { |_, message| message.present? } %>
+  <div class="flash-stack">
+    <% flash.each do |type, message| %>
+      <% next if message.blank? %>
+      <% kind = type.to_s == "notice" ? "notice" : "alert" %>
+      <% icon = kind == "notice" ? "circle-check" : "circle-alert" %>
+      <div class="flash-banner flash-banner--<%= kind %> animate-chip-in"
+           data-controller="flash"
+           data-flash-type-value="<%= kind %>"
+           role="<%= kind == "alert" ? "alert" : "status" %>">
+        <%= lucide_icon icon, class: "w-5 h-5 flash-banner__icon" %>
+        <span class="flash-banner__message"><%= message %></span>
+        <button type="button"
+                class="flash-banner__close"
+                data-action="click->flash#dismiss"
+                aria-label="<%= t("flash.dismiss_aria") %>">
+          <%= lucide_icon "x", class: "w-4 h-4" %>
+        </button>
+      </div>
+    <% end %>
+  </div>
+<% end %>
