@@ -62,3 +62,20 @@ fr:
     toggle_aria: "Basculer le thème"
   locale:
     switch_aria: "Changer la langue"
+  flash:
+    dismiss_aria: "Fermer le message"
+  pdf:
+    flash:
+      processed: "PDF généré avec succès !"
+      reprocessed: "PDF régénéré avec succès !"
+      upload_failed: "Le PDF n'a pas pu être envoyé."
+      invalid_arguments: "Options invalides. Vérifie tes réglages."
+      not_found: "PDF introuvable."
+      file_not_found: "Fichier introuvable."
+    errors:
+      generic: "Impossible de traiter le PDF : %{detail}"
+      crop_marks_count: "Les marques de coupe de ce PDF ne correspondent pas au format attendu — il semble déjà imposé avec plusieurs colonnes par page. Le preset Shechen attend une seule colonne par page. Dans TibetDoc, laisse « Two pecha sides per print page » décoché lors de l'export."
+      crop_row_incomplete: "Une rangée de marques de coupe est incomplète (une marque gauche ou droite manque). Vérifie que le PDF source a été exporté avec des marques de coupe sur chaque bord."
+      no_crop_marks: "Aucune marque de coupe détectée sur la première page. Active « Show crop marks » lors de l'export depuis TibetDoc, ou choisis un preset qui ne repose pas sur la détection des marques de coupe."
+      no_pages: "Ce PDF semble vide ou illisible."
+      tool_failed: "Le traitement du PDF a échoué dans un outil interne. Détail technique : %{detail}"

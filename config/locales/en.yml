@@ -62,3 +62,20 @@ en:
     toggle_aria: "Toggle theme"
   locale:
     switch_aria: "Switch language"
+  flash:
+    dismiss_aria: "Dismiss message"
+  pdf:
+    flash:
+      processed: "PDF generated successfully!"
+      reprocessed: "PDF regenerated successfully!"
+      upload_failed: "The PDF could not be uploaded."
+      invalid_arguments: "Invalid options. Please check your settings."
+      not_found: "PDF not found."
+      file_not_found: "File not found."
+    errors:
+      generic: "Could not process the PDF: %{detail}"
+      crop_marks_count: "The crop marks in this PDF don't match the expected layout — it looks like it's already imposed with several columns per page. The Shechen preset expects a single column per page. In TibetDoc, leave \"Two pecha sides per print page\" unchecked when exporting."
+      crop_row_incomplete: "A row of crop marks is incomplete (a left or right mark is missing). Check that the source PDF was exported with crop marks on every edge."
+      no_crop_marks: "No crop marks were detected on the first page. Enable \"Show crop marks\" when exporting from TibetDoc, or pick a preset that doesn't rely on crop-mark detection."
+      no_pages: "This PDF appears to be empty or unreadable."
+      tool_failed: "PDF processing failed in an internal tool. Technical detail: %{detail}"

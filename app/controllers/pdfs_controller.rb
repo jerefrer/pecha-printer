@@ -10,14 +10,14 @@ class PdfsController < ApplicationController
     if @pdf.save
       result = process_pdf(@pdf)
       if result.success?
+        flash[:notice] = t("pdf.flash.processed")
         redirect_to [ :edit, @pdf ]
-        flash[:notice] = "PDF processed successfully!"
       else
-        flash[:alert] = "Error processing PDF: #{result.message}"
+        flash[:alert] = PdfErrorTranslator.call(result.message)
         redirect_to root_path
       end
     else
-      flash[:alert] = "Failed to upload PDF"
+      flash[:alert] = t("pdf.flash.upload_failed")
       redirect_to root_path
     end
   end
@@ -27,14 +27,14 @@ class PdfsController < ApplicationController
     if @pdf.update(pdf_params)
       result = process_pdf(@pdf)
       if result.success?
+        flash[:notice] = t("pdf.flash.reprocessed")
         redirect_to [ :edit, @pdf ]
-        flash[:notice] = "PDF reprocessed successfully!"
       else
-        flash[:alert] = "Error processing PDF: #{result.message}"
+        flash[:alert] = PdfErrorTranslator.call(result.message)
         redirect_to root_path
       end
     else
-      flash[:alert] = "Wrong arguments"
+      flash[:alert] = t("pdf.flash.invalid_arguments")
       redirect_to root_path
     end
   end
@@ -43,10 +43,10 @@ class PdfsController < ApplicationController
     @pdf = find_pdf
     send_file output_file_path(@pdf), type: "application/pdf", disposition: "inline"
   rescue ActiveRecord::RecordNotFound
-    flash[:alert] = "PDF not found"
+    flash[:alert] = t("pdf.flash.not_found")
     redirect_to root_path
   rescue Errno::ENOENT
-    flash[:alert] = "File not found"
+    flash[:alert] = t("pdf.flash.file_not_found")
     redirect_to root_path
   end
 
