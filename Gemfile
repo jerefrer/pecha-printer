@@ -20,7 +20,7 @@ gem "jbuilder"
 # gem "redis", ">= 4.0.1"
 
 # For handling file uploads
-gem "carrierwave", "~> 2.0"
+gem "carrierwave", "~> 3.1"
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
