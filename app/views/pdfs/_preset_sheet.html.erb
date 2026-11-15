@@ -1,10 +1,11 @@
-<%# A landscape sheet with three pecha pages, as the preset prints them. A3 is drawn larger than A4, and crop marks show the Shechen style. %>
+<%# A landscape sheet with three pecha pages, as the preset prints them. A3 is drawn larger than A4, and crop marks show the Shechen style.
+    The pages fill h - 12 (three pages, two 3-unit gaps) and start 6 below the top, so they sit centred. %>
 <% w, h = (paper == "A4") ? [46, 33] : [58, 42] %>
 <% x = (72 - w) / 2.0; y = 4 + (44 - h); sw = w - 10; sh = (h - 12) / 3.0 - 2 %>
 <svg class="preset__sheet" viewBox="0 0 72 60" aria-hidden="true" focusable="false">
   <rect class="sheet-paper" x="<%= x %>" y="<%= y %>" width="<%= w %>" height="<%= h %>" rx="3" stroke-width="2"/>
   <% 3.times do |i| %>
-    <% py = y + 5 + i * (sh + 3) %>
+    <% py = y + 6 + i * (sh + 3) %>
     <rect class="sheet-page" x="<%= x + 5 %>" y="<%= py.round(2) %>" width="<%= sw %>" height="<%= sh.round(2) %>" rx="1" stroke-width="1.2"/>
     <path class="sheet-margin" d="M<%= (x + 5 + sw * 0.1).round(2) %> <%= py.round(2) %>v<%= sh.round(2) %>M<%= (x + 5 + sw * 0.9).round(2) %> <%= py.round(2) %>v<%= sh.round(2) %>" stroke-width="1"/>
     <% if crop_marks %>
