@@ -61,7 +61,8 @@ jobs:
         run: bin/rubocop -f github
 
   test:
-    runs-on: ubuntu-latest
+    # Same Ubuntu as the production server, so pdfjam and podofocrop behave the same.
+    runs-on: ubuntu-22.04
     env:
       CI: true
     steps:
