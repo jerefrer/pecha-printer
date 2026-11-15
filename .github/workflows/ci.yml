@@ -2,7 +2,8 @@ name: CI
 
 # Ruby comes from the 3.3 series rather than .ruby-version: GitHub's runners
 # only provide the latest patch of each series, while the server stays on the
-# exact version in .ruby-version. There is no test job: the app has no tests yet.
+# exact version in .ruby-version. The test job needs the PDF
+# tools the app shells out to.
 
 on:
   pull_request:
@@ -58,3 +59,24 @@ jobs:
 
       - name: Lint code for consistent style
         run: bin/rubocop -f github
+
+  test:
+    runs-on: ubuntu-latest
+    env:
+      CI: true
+    steps:
+      - name: Install packages
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y texlive-extra-utils poppler-utils podofo-utils sqlite3 libsqlite3-dev
+
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler: latest
+          bundler-cache: true
+
+      - name: Run tests
+        run: bin/rails db:test:prepare test
