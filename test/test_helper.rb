@@ -2,6 +2,14 @@ ENV["RAILS_ENV"] ||= "test"
 require_relative "../config/environment"
 require "rails/test_help"
 
+# Keep CarrierWave uploads and generated PDFs out of public/ while testing.
+CarrierWave.configure do |config|
+  config.root = Rails.root.join("tmp/test_uploads")
+  config.cache_dir = Rails.root.join("tmp/test_uploads/cache")
+end
+
+Minitest.after_run { FileUtils.rm_rf(Rails.root.join("tmp/test_uploads")) }
+
 module ActiveSupport
   class TestCase
     # Run tests in parallel with specified workers
