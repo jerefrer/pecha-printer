@@ -293,6 +293,13 @@
     letter-spacing: 0.04em;
   }
   html.dark .preset__badge { color: #86efac; }
+  /* The sheet drawn on each style card: a landscape sheet holding three pecha pages. */
+  .preset__sheet { flex: none; width: 66px; height: 55px; }
+  .preset__sheet .sheet-paper { fill: var(--color-canvas-surface); stroke: var(--color-accent); }
+  .preset__sheet .sheet-page { fill: var(--color-accent-soft); stroke: var(--color-accent); }
+  .preset__sheet .sheet-margin { stroke: var(--color-accent); }
+  .preset__sheet .sheet-crop { stroke: var(--color-red-600); }
+  .preset__sheet .sheet-label { fill: var(--color-accent); font: 700 10px var(--font-family-sans); }
   .preset__hint {
     margin-top: 0.75rem;
     padding-top: 0.75rem;

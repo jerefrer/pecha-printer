@@ -24,7 +24,10 @@
   <div class="flex gap-8 items-start w-full max-w-[760px] [.has-preview_&]:max-w-none">
     <div class="flex flex-col gap-8 w-full [.has-preview_&]:max-w-[400px] [.has-preview_&]:h-[calc(100vh-5rem)] [.has-preview_&]:overflow-y-auto [.has-preview_&]:pr-2">
       <header class="text-center [.has-preview_&]:text-left animate-fade-in">
-        <h1 class="m-0 text-4xl font-bold tracking-tight [.has-preview_&]:text-2xl"><%= t("app.title") %></h1>
+        <div class="flex items-center justify-center gap-3 [.has-preview_&]:justify-start">
+          <%= image_tag "/favicon.svg", alt: "", width: 52, height: 52, class: "w-[52px] h-[52px] [.has-preview_&]:w-9 [.has-preview_&]:h-9" %>
+          <h1 class="m-0 text-4xl font-bold tracking-tight [.has-preview_&]:text-2xl"><%= t("app.title") %></h1>
+        </div>
         <p class="mt-3 text-ink-muted text-base [.has-preview_&]:hidden">
           <%= t("app.tagline") %>
         </p>
@@ -81,9 +84,9 @@
           <div class="text-center text-sm text-ink-muted font-medium"><%= t("presets.label") %></div>
           <div class="grid grid-cols-1 sm:grid-cols-3 [.has-preview_&]:sm:grid-cols-1 gap-3">
             <% [
-              { name: "standard_a4", title: t("presets.standard_a4.title"), specs: [t("presets.specs.three_per_sheet"), t("presets.specs.fit_to_paper"), t("presets.specs.duplex")] },
-              { name: "standard_a3", title: t("presets.standard_a3.title"), specs: [t("presets.specs.three_per_sheet"), t("presets.specs.fit_to_paper"), t("presets.specs.duplex")] },
-              { name: "shechen", title: t("presets.shechen.title"), specs: [t("presets.specs.a3_three_per_sheet"), t("presets.specs.crop_marks"), t("presets.specs.duplex")], badge: t("presets.shechen.badge") }
+              { name: "standard_a4", paper: "A4", title: t("presets.standard_a4.title"), specs: [t("presets.specs.three_per_sheet"), t("presets.specs.fit_to_paper"), t("presets.specs.duplex")] },
+              { name: "standard_a3", paper: "A3", title: t("presets.standard_a3.title"), specs: [t("presets.specs.three_per_sheet"), t("presets.specs.fit_to_paper"), t("presets.specs.duplex")] },
+              { name: "shechen", paper: "A3", crop_marks: true, title: t("presets.shechen.title"), specs: [t("presets.specs.a3_three_per_sheet"), t("presets.specs.crop_marks"), t("presets.specs.duplex")], badge: t("presets.shechen.badge") }
             ].each_with_index do |p, idx| %>
               <div role="button"
                    tabindex="0"
@@ -92,11 +95,14 @@
                    data-preset-name="<%= p[:name] %>"
                    data-preset-target="card"
                    data-action="click->preset#select keydown->preset#selectKeydown">
-                <div class="flex items-center gap-2 flex-wrap">
-                  <span class="preset__title"><%= p[:title] %></span>
-                  <% if p[:badge] %>
-                    <span class="preset__badge"><%= p[:badge] %></span>
-                  <% end %>
+                <div class="flex items-center gap-3">
+                  <%= render "pdfs/preset_sheet", paper: p[:paper], crop_marks: p[:crop_marks] %>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="preset__title"><%= p[:title] %></span>
+                    <% if p[:badge] %>
+                      <span class="preset__badge"><%= p[:badge] %></span>
+                    <% end %>
+                  </div>
                 </div>
                 <ul class="preset__specs mt-2">
                   <% p[:specs].each do |s| %><li><%= s %></li><% end %>
